@@ -1,4 +1,5 @@
-import { DependencyInstaller, Location, ProgressListener } from './Dependency';
+import { DependencyInstaller } from './Dependency';
+import { Location, ProgressListener } from '../util';
 
 export class InstallerSequence {
 	constructor(readonly installers: DependencyInstaller[]) {

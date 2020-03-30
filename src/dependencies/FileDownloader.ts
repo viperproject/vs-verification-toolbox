@@ -2,7 +2,8 @@ import * as http from 'http';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { DependencyInstaller, Location, ProgressListener } from './Dependency';
+import { DependencyInstaller } from './Dependency';
+import { Location, ProgressListener } from '../util';
 
 export class FileDownloader implements DependencyInstaller {
 	constructor(
@@ -11,9 +12,10 @@ export class FileDownloader implements DependencyInstaller {
 
 	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener): Promise<Location> {
 		const target = location.child(path.basename(this.remoteUrl));
-		if (!shouldUpdate && await target.exists()) { return target; }
+		const targetExists = await target.exists();
+		if (!shouldUpdate && targetExists) { return target; }
 
-		if (await target.exists()) {
+		if (targetExists) {
 			await fs.unlink(target.basePath);
 		}
 
@@ -34,14 +36,14 @@ export class FileDownloader implements DependencyInstaller {
 					currentSize += chunk.length;
 					progressListener(currentSize / totalSize, "Downloading…");
 				});
-	
+
 				response.pipe(file);
 
 				response.on("end", () => {
 					file.close();
 					resolve();
 				});
-	
+
 				response.on("error", (err) => {
 					fs.unlink(localPath, (_: unknown) => {
 						console.log("Could not remove downloaded file.");

@@ -2,10 +2,11 @@
   "name": "vs-verification-toolbox",
   "version": "1.0.0",
   "description": "Useful component to build VS Code extensions for verifiers.",
-  "main": "index.js",
+  "main": "out/index.js",
+  "types": "out/index.d.ts",
   "scripts": {
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
+    "compile": "tsc -p ./ --declaration",
+    "watch": "tsc -watch -p ./ --declaration",
     "lint": "tslint --config ./tslint.json --project tsconfig.json './src/**/*.ts'",
     "pretest": "npm run compile",
     "test": "echo 'Error: no test specified' && exit 1"
@@ -21,7 +22,7 @@
     "node"
   ],
   "author": "Julian Dunskus",
-  "license": "ISC",
+  "license": "MPL2",
   "bugs": {
     "url": "https://github.com/viperproject/vs-verification-toolbox/issues"
   },
@@ -34,6 +35,7 @@
   "dependencies": {
     "@types/extract-zip": "^1.6.2",
     "@types/fs-extra": "^8.1.0",
+    "@types/vscode": "^1.43.0",
     "extract-zip": "^1.6.7",
     "fs-extra": "^9.0.0"
   }
