@@ -10,7 +10,7 @@ The `util` package offers several convenient utilities and wrappers.
 
 #### File System Locations
 
-A `Location ` represents a directory on the file system, providing a simple API for navigating through the hierarchy. Example usage:
+A `Location` represents a directory on the file system, providing a simple API for navigating through the hierarchy. Example usage:
 
 ```typescript
 const root = new Location("/tmp/folder");
