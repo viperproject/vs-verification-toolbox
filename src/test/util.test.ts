@@ -1,4 +1,5 @@
 import * as assert from 'assert';
+
 import { Location } from '..';
 
 suite("util", () => {
@@ -14,4 +15,6 @@ suite("util", () => {
             assert(await root.exists());
         });
     });
+
+    // TODO test Progress and (maybe?) Platform
 });
