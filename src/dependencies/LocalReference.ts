@@ -1,7 +1,6 @@
 import * as fs from 'fs-extra';
 
-import { DependencyInstaller } from './Dependency';
-import { Location, ProgressListener } from '../util';
+import { DependencyInstaller, Location, ProgressListener } from '..';
 
 export class LocalReference implements DependencyInstaller {
 	constructor(

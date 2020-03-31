@@ -1,9 +1,7 @@
 import * as extractZip from 'extract-zip';
 import * as fs from 'fs-extra';
-import { promisify } from 'util';
 
-import { DependencyInstaller } from './Dependency';
-import { Location, ProgressListener } from '../util';
+import { DependencyInstaller, Location, ProgressListener } from '..';
 
 /** Extracts the zip at the location provided to `install` to a folder named `targetName`. */
 export class ZipExtractor implements DependencyInstaller {

@@ -2,8 +2,7 @@ import * as http from 'http';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-import { DependencyInstaller } from './Dependency';
-import { Location, ProgressListener } from '../util';
+import { DependencyInstaller, Location, ProgressListener } from '..';
 
 export class FileDownloader implements DependencyInstaller {
 	constructor(

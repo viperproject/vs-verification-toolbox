@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { Location, ProgressListener } from '../util';
+import { Location, ProgressListener } from '..';
 
 /**
  * Manages the installation for a dependency, maintaining separate installations for each source (in a folder using their name).
