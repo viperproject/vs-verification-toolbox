@@ -12,7 +12,7 @@ export class ZipExtractor implements DependencyInstaller {
 	) { }
 
 	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener): Promise<Location> {
-		const target = location.enclosingFolder().child(this.targetName);
+		const target = location.enclosingFolder.child(this.targetName);
 		if (!shouldUpdate && await target.exists()) { return target; }
 
 		try {
@@ -25,7 +25,7 @@ export class ZipExtractor implements DependencyInstaller {
 			let prevEntrySize = 0;
 			// TODO remove debug logging
 			console.log("starting zip extraction");
-			await promisify(extractZip)(location.basePath, {
+			await extractZip(location.basePath, {
 				dir: target.basePath,
 				onEntry: (entry, zip) => {
 					console.log(`starting entry of size ${entry.compressedSize}`);
