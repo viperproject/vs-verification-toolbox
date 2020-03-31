@@ -19,14 +19,14 @@ export class Dependency<SourceName extends string> {
 	 * Ensures that the dependency from the given source is currently installed.
 	 * If it's not yet installed, this method will install it, otherwise it won't do anything (except provide a way to access it).
 	 */
-	public ensureInstalled(sourceName: SourceName, progressListener: ProgressListener): Promise<Location> {
+	public ensureInstalled(sourceName: SourceName, progressListener?: ProgressListener): Promise<Location> {
 		return this.install(sourceName, false, progressListener);
 	}
 
 	/**
 	 * Forces an update from the given source, replacing the current installation in the process.
 	 */
-	public async update(sourceName: SourceName, progressListener: ProgressListener): Promise<Location> {
+	public async update(sourceName: SourceName, progressListener?: ProgressListener): Promise<Location> {
 		return this.install(sourceName, true, progressListener);
 	}
 
@@ -34,7 +34,7 @@ export class Dependency<SourceName extends string> {
 	 * Ensures that the dependency from the given source is currently installed.
 	 * This method is the combination of `ensureInstalled` and `update`, switching between the two based on `shouldUpdate`.
 	 */
-	public async install(sourceName: SourceName, shouldUpdate: boolean, progressListener: ProgressListener): Promise<Location> {
+	public async install(sourceName: SourceName, shouldUpdate: boolean, progressListener?: ProgressListener): Promise<Location> {
 		const source = this.sources.get(sourceName);
 		if (source === undefined) {
 			throw new Error(`Dependency ${this.basePath} has no source named ${sourceName}`);
@@ -43,7 +43,10 @@ export class Dependency<SourceName extends string> {
 
 		local.mkdir();
 
-		return source.install(local, shouldUpdate, progressListener);
+		return source.install(
+			local, shouldUpdate,
+			progressListener ?? ((_fraction, _step) => { /* do nothing */ })
+		);
 	}
 
 	private localDependency(sourceName: SourceName): Location {
