@@ -47,7 +47,7 @@ const myDependency = new Dependency<"remote" | "local">(
     ["remote",
         new InstallerSequence([
             new FileDownloader("https://remote.com/file.zip"),
-            new ZipExtractor("unzipped"),
+            new ZipExtractor("unzipped"), // name for the unzipped folder
         ])
     ],
     ["local", new LocalReference("/path/to/external/local/installation")]
