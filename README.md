@@ -43,7 +43,7 @@ An example dependency might be defined as follows:
 
 ```typescript
 const myDependency = new Dependency<"remote" | "local">(
-    "/path/to/install/folder",
+    path.join(context.globalStoragePath, "myDependency"), // path to install folder
     ["remote",
         new InstallerSequence([
             new FileDownloader("https://remote.com/file.zip"),
@@ -54,7 +54,7 @@ const myDependency = new Dependency<"remote" | "local">(
 );
 ```
 
-This defines a dependency with two sources (`remote` and `local`) which is installed within /path/to/install/folder.
+This defines a dependency with two sources (`remote` and `local`) which is installed within a folder named `myDependency` within the global storage folder VS Code provides to your extension, e.g. `~/Library/Application Support/Code/User/globalStorage/<your extension slug>/myDependency`. Of course, you could specify any old path, but this one is probably a good choice for your use case.
 
 If you then run `await myDependency.ensureInstalled("remote")`, it will give you a `Location` referencing the location of the local installation from the `remote` source. If it's already installed, it won't do any extra work; otherwise it will download the file at https://remote.com/file.zip and unzip it into a folder named `unzipped`. Either way, you get back the location of the `unzipped` folder. You can force a reinstall even if it already exists by calling `update` instead of `ensureInstalled`.
 
