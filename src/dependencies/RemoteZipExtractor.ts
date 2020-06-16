@@ -11,7 +11,7 @@ export class RemoteZipExtractor implements DependencyInstaller {
     ) {
         this.sequence = new InstallerSequence([
             new FileDownloader(this.remoteUrl),
-            new ZipExtractor(this.folderName)
+            new ZipExtractor(this.folderName, true),
         ]);
     }
 

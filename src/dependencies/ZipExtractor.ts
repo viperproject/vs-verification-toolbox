@@ -6,7 +6,8 @@ import { DependencyInstaller, Location, ProgressListener } from '..';
 /** Extracts the zip at the location provided to `install` to a folder named `targetName`. */
 export class ZipExtractor implements DependencyInstaller {
 	constructor(
-		readonly targetName: string
+		readonly targetName: string,
+		readonly deleteZip: boolean = false
 	) { }
 
 	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener): Promise<Location> {
@@ -36,7 +37,11 @@ export class ZipExtractor implements DependencyInstaller {
 
 			progressListener(1, "Unzipped");
 
-			// don't delete the original zip since that would cause it to get re-downloaded on next install
+			// we don't usually delete the original zip since that would cause it to get re-downloaded on next install
+			if (this.deleteZip) {
+				fs.unlink(location.basePath);
+			}
+
 			return target;
 		} catch (err) {
 			await fs.remove(target.basePath);
