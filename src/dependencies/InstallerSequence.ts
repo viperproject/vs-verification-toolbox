@@ -2,7 +2,15 @@ import { DependencyInstaller, Location, ProgressListener } from '..';
 
 export class InstallerSequence {
 	constructor(readonly installers: DependencyInstaller[]) {
-		// TODO flatten nested sequences?
+		// flatten nested sequences
+		this.installers = installers.reduce((list: DependencyInstaller[], installer) => {
+			if (installer instanceof InstallerSequence) {
+				list.push(...installer.installers);
+			} else {
+				list.push(installer);
+			}
+			return list;
+		}, []);
 	}
 
 	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener): Promise<Location> {

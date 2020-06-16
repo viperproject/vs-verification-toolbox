@@ -3,3 +3,4 @@ export * from './FileDownloader';
 export * from './ZipExtractor';
 export * from './InstallerSequence';
 export * from './LocalReference';
+export * from './RemoteZipDownloader';

@@ -8,8 +8,8 @@
   ],
   "types": "out/index.d.ts",
   "scripts": {
-    "compile": "tsc -p ./ --declaration",
-    "watch": "tsc -watch -p ./ --declaration",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
     "lint": "tslint --config ./tslint.json --project tsconfig.json './src/**/*.ts'",
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js"
