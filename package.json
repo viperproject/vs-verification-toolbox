@@ -13,7 +13,7 @@
     "lint": "tslint --config ./tslint.json --project tsconfig.json './src/**/*.ts'",
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js",
-    "prepublish": "npm run compile",
+    "prepare": "npm run compile"
   },
   "repository": {
     "type": "git",
