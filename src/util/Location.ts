@@ -11,10 +11,7 @@ import * as path from 'path';
 export class Location {
     constructor(
         readonly basePath: string
-    ) {
-        // TODO remove debug logging
-        // console.log(`creating location at ${basePath}`);
-    }
+    ) { }
 
     /** Returns the parent location of this one. */
     public get enclosingFolder(): Location {

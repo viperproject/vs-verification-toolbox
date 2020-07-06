@@ -22,18 +22,14 @@ export class ZipExtractor implements DependencyInstaller {
 
 			let extractedBytes = 0;
 			let prevEntrySize = 0;
-			// TODO remove debug logging
-			console.log("starting zip extraction");
 			await extractZip(location.basePath, {
 				dir: target.basePath,
 				onEntry: (entry, zip) => {
-					console.log(`starting entry of size ${entry.compressedSize}`);
 					extractedBytes += prevEntrySize;
 					prevEntrySize = entry.compressedSize;
 					progressListener(extractedBytes / zip.fileSize, "Unzipping…");
 				}
 			});
-			console.log("finished zip extraction");
 
 			progressListener(1, "Unzipped");
 
