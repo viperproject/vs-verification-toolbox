@@ -10,48 +10,50 @@ export class FileDownloader implements DependencyInstaller {
 	) { }
 
 	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener): Promise<Location> {
-		const target = location.child(path.basename(this.remoteUrl));
-		const targetExists = await target.exists();
-		if (!shouldUpdate && targetExists) { return target; }
+		const filename = path.basename(this.remoteUrl);
+		const target = location.child(filename);
 
-		if (targetExists) {
-			await fs.unlink(target.basePath);
-		}
+		if (!shouldUpdate && await target.exists()) { return target; }
 
-		const localPath = target.basePath;
-		const file = fs.createWriteStream(localPath);
+		const temp = location.child(`.${filename}.download`);
+		await temp.unlinkIfExists();
+		const tempFile = fs.createWriteStream(temp.basePath);
 
-		await new Promise((resolve, reject) => {
-			http.get(this.remoteUrl, (response) => {
-				if (response.statusCode !== 200) {
-					reject(`request to ${this.remoteUrl} failed with status code ${response.statusCode}`);
-				}
+		try {
+			await new Promise((resolve, reject) => {
+				http.get(this.remoteUrl, (response) => {
+					if (response.statusCode !== 200) {
+						reject(`request to ${this.remoteUrl} failed with status code ${response.statusCode}`);
+					}
 
-				const totalSize = parseInt(response.headers["content-length"]!, 10);
-				let currentSize = 0;
+					const totalSize = parseInt(response.headers["content-length"]!, 10);
+					let currentSize = 0;
 
-				progressListener(0, "Downloading…");
-				response.on("data", (chunk) => {
-					currentSize += chunk.length;
-					progressListener(currentSize / totalSize, "Downloading…");
-				});
-
-				response.pipe(file);
-
-				response.on("end", () => {
-					file.close();
-					resolve();
-				});
-
-				response.on("error", (err) => {
-					fs.unlink(localPath, (_: unknown) => {
-						console.log("Could not remove downloaded file.");
+					progressListener(0, "Downloading…");
+					response.on("data", (chunk) => {
+						currentSize += chunk.length;
+						tempFile.write(chunk);
+						progressListener(currentSize / totalSize, "Downloading…");
 					});
-					reject(err);
+
+					response.on("end", () => {
+						tempFile.close();
+						resolve();
+					});
+
+					response.on("error", async (err) => {
+						reject(err);
+					});
 				});
 			});
-		});
 
-		return target;
+			await target.unlinkIfExists();
+			await fs.move(temp.basePath, target.basePath);
+
+			return target;
+		} catch (e) {
+			await temp.unlinkIfExists();
+			throw e;
+		}
 	}
 }

@@ -43,6 +43,12 @@ export class Location {
         return fs.ensureDir(this.basePath);
     }
 
+    public async unlinkIfExists(): Promise<void> {
+        if (await this.exists()) {
+            await fs.unlink(this.basePath);
+        }
+    }
+
     public toString(): string {
         return `Location(${this.basePath})`;
     }

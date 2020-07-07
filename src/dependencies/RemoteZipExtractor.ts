@@ -18,7 +18,7 @@ export class RemoteZipExtractor implements DependencyInstaller {
     public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener): Promise<Location> {
         const target = location.child(this.folderName);
 
-        if (await target.exists() && !shouldUpdate) { return target; }
+        if (!shouldUpdate && await target.exists()) { return target; }
 
         return this.sequence.install(location, shouldUpdate, progressListener);
     }
