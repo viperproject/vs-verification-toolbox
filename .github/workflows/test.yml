@@ -2,20 +2,26 @@ name: NPM Tests
 
 on:
   push:
-    branches: [ '*' ]
+    branches: ["*"]
   pull_request:
-    branches: [ '*' ]
+    branches: ["*"]
 
 jobs:
   test:
-    runs-on: macos-latest
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+      fail-fast: false # don't cancel when one matrix job fails, so we can compare to the others
+    runs-on: ${{ matrix.os }}
 
     steps:
-    - name: Check out the repo
-      uses: actions/checkout@v2
+      - name: Check out the repo
+        uses: actions/checkout@v2
 
-    - name: Install NPM dependencies
-      run: npm install
+      - name: Install NPM dependencies
+        run: npm install
 
-    - name: Run tests
-      run: npm test
+      - name: Run tests (headless)
+        uses: GabrielBB/xvfb-action@v1.0
+        with:
+          run: npm test
