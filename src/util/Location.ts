@@ -11,7 +11,9 @@ import * as path from 'path';
 export class Location {
     constructor(
         readonly basePath: string
-    ) { }
+    ) {
+        this.basePath = path.normalize(this.basePath);
+    }
 
     /** Returns the parent location of this one. */
     public get enclosingFolder(): Location {
