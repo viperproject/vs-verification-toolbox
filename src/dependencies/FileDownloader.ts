@@ -15,6 +15,7 @@ export class FileDownloader implements DependencyInstaller {
 
 		if (!shouldUpdate && await target.exists()) { return target; }
 
+		await location.mkdir();
 		const temp = location.child(`.${filename}.download`);
 		await temp.unlinkIfExists();
 		const tempFile = fs.createWriteStream(temp.basePath);
