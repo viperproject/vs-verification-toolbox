@@ -5,7 +5,7 @@ This module provides several useful tools for writing VS Code extensions that ve
 As it is not yet published on NPM, in order to use this module, you'll have to use some special syntax in your package.json:
 
 ```json
-"vs-verification-toolbox": "git@github.com:viperproject/vs-verification-toolbox.git"
+"vs-verification-toolbox": "https://github.com/viperproject/vs-verification-toolbox.git"
 ```
 
 If `npm install` still complains about the package not being in the registry, try deleting package-lock.json to regenerate it.
