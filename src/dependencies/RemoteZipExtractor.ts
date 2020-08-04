@@ -20,6 +20,7 @@ export class RemoteZipExtractor implements DependencyInstaller {
 
         if (!shouldUpdate && await target.exists()) { return target; }
 
+        console.log("remote zip extractor installing");
         return this.sequence.install(location, shouldUpdate, progressListener);
     }
 }

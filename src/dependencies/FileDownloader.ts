@@ -15,14 +15,17 @@ export class FileDownloader implements DependencyInstaller {
 
 		if (!shouldUpdate && await target.exists()) { return target; }
 
+		console.log("file downloader preparing");
 		await location.mkdir();
 		const temp = location.child(`.${filename}.download`);
 		await temp.unlinkIfExists();
 		const tempFile = fs.createWriteStream(temp.basePath);
+		console.log("file downloader prepared");
 
 		try {
 			await new Promise((resolve, reject) => {
 				http.get(this.remoteUrl, (response) => {
+					console.log(`file downloader got response ${response.statusCode}`);
 					if (response.statusCode !== 200) {
 						reject(`request to ${this.remoteUrl} failed with status code ${response.statusCode}`);
 					}
@@ -48,8 +51,10 @@ export class FileDownloader implements DependencyInstaller {
 				});
 			});
 
+			console.log("file downloader moving");
 			await target.unlinkIfExists();
 			await fs.move(temp.basePath, target.basePath);
+			console.log("file downloader done");
 
 			return target;
 		} catch (e) {
