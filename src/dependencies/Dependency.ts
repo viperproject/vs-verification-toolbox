@@ -42,7 +42,6 @@ export class Dependency<SourceName extends string> {
 		const local = this.localDependency(sourceName);
 
 		local.mkdir();
-		console.log("local dir made");
 
 		return source.install(
 			local, shouldUpdate,
