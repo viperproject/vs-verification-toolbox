@@ -1,8 +1,13 @@
-import * as http from 'http';
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import got, { Progress } from 'got';
+import * as stream from 'stream';
+import { promisify } from 'util';
 
 import { DependencyInstaller, Location, ProgressListener } from '..';
+
+
+const pipeline = promisify(stream.pipeline);
 
 export class FileDownloader implements DependencyInstaller {
 	constructor(
@@ -21,33 +26,14 @@ export class FileDownloader implements DependencyInstaller {
 		const tempFile = fs.createWriteStream(temp.basePath);
 
 		try {
-			await new Promise((resolve, reject) => {
-				http.get(this.remoteUrl, (response) => {
-					if (response.statusCode !== 200) {
-						reject(`request to ${this.remoteUrl} failed with status code ${response.statusCode}`);
-					}
-
-					const totalSize = parseInt(response.headers["content-length"]!, 10);
-					let currentSize = 0;
-
-					progressListener(0, "Downloading…");
-					response.on("data", (chunk) => {
-						currentSize += chunk.length;
-						tempFile.write(chunk);
-						progressListener(currentSize / totalSize, "Downloading…");
-					});
-
-					response.on("end", () => {
-						tempFile.close();
-						resolve();
-					});
-
-					response.on("error", async (err) => {
-						reject(err);
-					});
-				});
-			});
-
+			progressListener(0, "Downloading…");
+			await pipeline(
+				got
+					.stream(this.remoteUrl)
+					.on('downloadProgress', (prog: Progress) => progressListener(prog.percent, "Downloading…")),
+				tempFile
+			);
+	
 			await target.unlinkIfExists();
 			await fs.move(temp.basePath, target.basePath);
 

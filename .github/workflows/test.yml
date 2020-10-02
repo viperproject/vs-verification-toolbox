@@ -18,8 +18,22 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
+      - name: Cache npm
+        uses: actions/cache@v2
+        with:
+          path: .npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache VSCode
+        uses: actions/cache@v2
+        with:
+          path: .vscode-test
+          key: ${{ runner.os }}-vscode
+
       - name: Install NPM dependencies
-        run: npm install
+        run: npm ci --cache .npm --prefer-offline
 
       - name: Run tests (headless)
         uses: GabrielBB/xvfb-action@v1.0
