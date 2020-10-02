@@ -40,11 +40,11 @@ suite("dependencies", () => {
         const myDependency = new Dependency<"remote">(
             TMP_PATH,
             ["remote",
-              new InstallerSequence([
+                new InstallerSequence([
                     new FileDownloader(HTTP_DOWNLOAD_URL)
-              ])
+                ])
             ]
-          );
+        );
         return withProgressInWindow(
             "Testing download of an HTTP file",
             listener => myDependency.install("remote", true, listener));
@@ -55,11 +55,11 @@ suite("dependencies", () => {
         const myDependency = new Dependency<"remote">(
             TMP_PATH,
             ["remote",
-              new InstallerSequence([
+                new InstallerSequence([
                     new FileDownloader(HTTPS_DOWNLOAD_URL)
-              ])
+                ])
             ]
-          );
+        );
         return withProgressInWindow(
             "Testing download of an HTTP file",
             listener => myDependency.install("remote", true, listener));

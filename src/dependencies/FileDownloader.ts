@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import got from 'got';
+import got, { Progress } from 'got';
 import * as stream from 'stream';
 import { promisify } from 'util';
 
@@ -30,7 +30,7 @@ export class FileDownloader implements DependencyInstaller {
 			await pipeline(
 				got
 					.stream(this.remoteUrl)
-					.on('downloadProgress', (prog: GotProgress) => progressListener(prog.percent, "Downloading…")),
+					.on('downloadProgress', (prog: Progress) => progressListener(prog.percent, "Downloading…")),
 				tempFile
 			);
 	
@@ -43,10 +43,4 @@ export class FileDownloader implements DependencyInstaller {
 			throw e;
 		}
 	}
-}
-
-interface GotProgress {
-	percent: number;
-	transferred: number;
-	total: number;
 }
