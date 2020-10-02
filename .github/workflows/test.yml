@@ -26,6 +26,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Cache VSCode
+        uses: actions/cache@v2
+        with:
+          path: .vscode-test
+          key: ${{ runner.os }}-vscode
+
       - name: Install NPM dependencies
         run: npm ci --cache .npm --prefer-offline
 
