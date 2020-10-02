@@ -9,11 +9,10 @@ suite("dependencies", () => {
 
     const PROJECT_ROOT = path.join(__dirname, "../../");
     const TMP_PATH: string = path.join(PROJECT_ROOT, "src", "test", "tmp");
-    const HTTP_DOWNLOAD_URL: string = "http://viper.ethz.ch/downloads/ViperToolsLinux.zip";
-    const HTTP_DOWNLOAD_TIMEOUT_MS: number = 60 * 1000;
-    const HTTPS_DOWNLOAD_URL: string = 
-        "https://ethz.ch/content/dam/ethz/special-interest/infk/chair-program-method/pm/documents/Education/Theses/Julian_Dunskus_BA_Description.pdf";
-    const HTTPS_DOWNLOAD_TIMEOUT_MS: number = 1000;
+    const HTTP_DOWNLOAD_URL: string = "http://viper.ethz.ch/examples/";
+    const HTTP_DOWNLOAD_TIMEOUT_MS: number = 10 * 1000;
+    const HTTPS_DOWNLOAD_URL: string = "https://ethz.ch";
+    const HTTPS_DOWNLOAD_TIMEOUT_MS: number = 10 * 1000;
 
     suiteSetup(function() {
         // create a tmp directory for downloading files to it

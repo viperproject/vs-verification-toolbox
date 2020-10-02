@@ -1,10 +1,13 @@
-import * as http from 'http';
-import * as https from 'https';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { URL } from 'url';
+import got from 'got';
+import * as stream from 'stream';
+import { promisify } from 'util';
 
 import { DependencyInstaller, Location, ProgressListener } from '..';
+
+
+const pipeline = promisify(stream.pipeline);
 
 export class FileDownloader implements DependencyInstaller {
 	constructor(
@@ -23,33 +26,14 @@ export class FileDownloader implements DependencyInstaller {
 		const tempFile = fs.createWriteStream(temp.basePath);
 
 		try {
-			await new Promise((resolve, reject) => {
-				this.get(this.remoteUrl, (response: http.IncomingMessage) => {
-					if (response.statusCode !== 200) {
-						reject(`request to ${this.remoteUrl} failed with status code ${response.statusCode}`);
-					}
-
-					const totalSize = parseInt(response.headers["content-length"]!, 10);
-					let currentSize = 0;
-
-					progressListener(0, "Downloading…");
-					response.on("data", (chunk) => {
-						currentSize += chunk.length;
-						tempFile.write(chunk);
-						progressListener(currentSize / totalSize, "Downloading…");
-					});
-
-					response.on("end", () => {
-						tempFile.close();
-						resolve();
-					});
-
-					response.on("error", async (err) => {
-						reject(err);
-					});
-				});
-			});
-
+			progressListener(0, "Downloading…");
+			await pipeline(
+				got
+					.stream(this.remoteUrl)
+					.on('downloadProgress', (prog: GotProgress) => progressListener(prog.percent, "Downloading…")),
+				tempFile
+			);
+	
 			await target.unlinkIfExists();
 			await fs.move(temp.basePath, target.basePath);
 
@@ -59,21 +43,10 @@ export class FileDownloader implements DependencyInstaller {
 			throw e;
 		}
 	}
+}
 
-	/** 
-	 * wrapper for http.get and https.get
-	 * this is a text book example for a bad library especially since http.get and https.get share 
-	 * the same callback argument and return type
-	 */
-	private get(url: string, callback?: (res: http.IncomingMessage) => void): http.ClientRequest {
-		const prot: string = new URL(url).protocol;
-		switch (prot) {
-			case "http:":
-				return http.get(url, callback);
-			case "https:":
-				return https.get(url, callback);
-			default:
-				throw `unknown protocol '${prot}'`;
-		}
-	}
+interface GotProgress {
+	percent: number;
+	transferred: number;
+	total: number;
 }
