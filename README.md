@@ -1,5 +1,8 @@
 # VS Verification Toolbox
 
+[![Test Status](https://github.com/viperproject/vs-verification-toolbox/workflows/NPM%20Tests/badge.svg?branch=master)](https://github.com/viperproject/vs-verification-toolbox/actions?query=workflow%3A%22NPM+Tests%22+branch%3Amaster)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](./LICENSE)
+
 This module provides several useful tools for writing VS Code extensions that verify code.
 
 As it is not yet published on NPM, in order to use this module, you'll have to use some special syntax in your package.json:
