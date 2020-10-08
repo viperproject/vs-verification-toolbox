@@ -68,3 +68,12 @@ If you then run `await myDependency.ensureInstalled("remote")`, it will give you
 
 If you instead run `await myDependency.ensureInstalled("local")` (or `update`, `install`, etc.), it will simply give you back a reference to the folder at /path/to/external/local/installation, after ensuring that folder actually exists.
 
+### GitHub Assets
+
+`GitHubReleaseAsset` in the `dependencies` package provides the following two functions to retrieve the URL to download an asset for a particular GitHub release:
+- `getLatestAssetUrl(...)`: retrieves the URL to an asset of the latest GitHub pre- or non-pre-release
+- `getTaggedAssetUrl(...)`: retrieves the URL to an asset of a GitHub (pre- or non-pre-)release based on a git tag
+
+The returned URL can then, for example, be passed to `FileDownloader` to download the asset.
+
+If you use GitHub pre-releases as nightly builds of your repository, the [create-nightly-release](https://github.com/viperproject/create-nightly-release) repo provides a GitHub action that creates a pre-release and automatically deletes old pre-releases (for safety reasons only pre-releases that have been created by that action).
