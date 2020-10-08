@@ -15,7 +15,11 @@ suite("dependencies", () => {
     const HTTP_DOWNLOAD_TIMEOUT_MS: number = 10 * 1000; // 10s
     const HTTPS_DOWNLOAD_URL: string = "https://ethz.ch";
     const HTTPS_DOWNLOAD_TIMEOUT_MS: number = 10 * 1000; // 10s
-    const PRUSTI_UBUNTU_ASSET_DOWNLOAD_TIMEOUT_MS: number = 3 * 60 * 1000; // 3min
+    const SMALL_ASSET_DOWNLOAD_TIMEOUT_MS: number = 5 * 1000; // 5s for 10 bytes
+    const MEDIUM_ASSET_DOWNLOAD_TIMEOUT_MS: number = 10 * 1000; // 10s for 1MB
+    const LARGE_ASSET_DOWNLOAD_TIMEOUT_MS: number = 30 * 1000; // 30s for 10MB
+    const ASSET_OWNER: string = "viperproject";
+    const ASSET_REPO: string = "vs-verification-toolbox-release-testing";
 
     suiteSetup(function() {
         // create a tmp directory for downloading files to it
@@ -68,14 +72,67 @@ suite("dependencies", () => {
             listener => myDependency.install("remote", true, listener));
     });
 
-    test("Get tagged asset url", async function() {
-        this.timeout(PRUSTI_UBUNTU_ASSET_DOWNLOAD_TIMEOUT_MS);
-        const assetName = "prusti-release-ubuntu.zip";
+    test("Tagged binary asset", async function() {
+        this.timeout(SMALL_ASSET_DOWNLOAD_TIMEOUT_MS);
+        const assetName = "small.bin";
+        const tag = "v1.1";
+        const md5Hash = "a0948bb73029668fec22741c38b611ef";
         const url = await GitHubReleaseAsset.getTaggedAssetUrl(
-            "viperproject", "prusti-dev", assetName, "v-2020-10-06-1807");
-        console.info(`URL to prusti-dev Ubuntu asset of v-2020-10-06-1807 release: '${url}'`);
+            ASSET_OWNER, ASSET_REPO, assetName, tag);
+        await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
+    });
 
-        // now download the zip:
+    test("Tagged zip asset", async function() {
+        this.timeout(LARGE_ASSET_DOWNLOAD_TIMEOUT_MS);
+        const assetName = "large.zip";
+        const tag = "v1";
+        const md5Hash = "7dcd4caa25bceaabdb2ca525377fab0b";
+        const url = await GitHubReleaseAsset.getTaggedAssetUrl(
+            ASSET_OWNER, ASSET_REPO, assetName, tag);
+        await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
+    });
+
+    test("Get latest pre-release binary asset url", async function() {
+        this.timeout(MEDIUM_ASSET_DOWNLOAD_TIMEOUT_MS);
+        const assetName = "medium.bin";
+        // latest prerelease is v1.2
+        const md5Hash = "d1b9d86a9ea97fa0d2f9dd32ac99ea57";
+        const url = await GitHubReleaseAsset.getLatestAssetUrl(
+            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true);
+        await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
+    });
+
+    test("Get latest pre-release zip asset url", async function() {
+        this.timeout(SMALL_ASSET_DOWNLOAD_TIMEOUT_MS);
+        const assetName = "small.zip";
+        // latest prerelease is v1.2
+        const md5Hash = "aaf83dc77a9fe4e0379476e3d16940f6";
+        const url = await GitHubReleaseAsset.getLatestAssetUrl(
+            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true);
+        await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
+    });
+
+    test("Get latest (non-pre-release) binary asset url", async function() {
+        this.timeout(LARGE_ASSET_DOWNLOAD_TIMEOUT_MS);
+        const assetName = "large.bin";
+        // latest non-pre-release is v1
+        const md5Hash = "1c9e58ecee1520efcabee1525f858637";
+        const url = await GitHubReleaseAsset.getLatestAssetUrl(
+            ASSET_OWNER, ASSET_REPO, assetName);
+        await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
+    });
+
+    test("Get latest (non-pre-release) zip asset url", async function() {
+        this.timeout(MEDIUM_ASSET_DOWNLOAD_TIMEOUT_MS);
+        const assetName = "medium.zip";
+        // latest non-pre-release is v1
+        const md5Hash = "c3163d654efcc01ff707c3a938764040";
+        const url = await GitHubReleaseAsset.getLatestAssetUrl(
+            ASSET_OWNER, ASSET_REPO, assetName);
+        await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
+    });
+
+    async function downloadAndCheckGitHubAsset(url: string, assetName: string, md5Hash: string): Promise<void> {
         const headers = {
             "Accept": "application/octet-stream"
         };
@@ -88,26 +145,12 @@ suite("dependencies", () => {
             ]
         );
         const { result: downloadDestination } = await withProgressInWindow(
-            "Testing download of a GitHub asset",
+            `Downloading GitHub asset ${assetName}`,
             listener => myDependency.install("remote", true, listener));
-        console.log(`Prusti asset downloaded to '${downloadDestination.basePath}'`);
         // check md5 of this file
-        const expected: string = "f7d4dd24eb40c0375d7a37d839ca515b";
         const actual: string = await md5File(downloadDestination.basePath);
-        assert.strictEqual(actual, expected, `md5 hash of downloaded Prusti release asset does not match`);
-    });
-
-    test("Get latest pre-release asset url", async function() {
-        const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            "viperproject", "prusti-dev", "prusti-release-ubuntu.zip", /* includePrerelease */ true);
-        console.info(`URL to latest non-pre- or pre-release prusti-dev Ubuntu asset is: '${url}'`);
-    });
-
-    test("Get latest asset url", async function() {
-        const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            "viperproject", "prusti-dev", "prusti-release-ubuntu.zip");
-        console.info(`URL to latest non-pre-release prusti-dev Ubuntu asset is: '${url}'`);
-    });
+        assert.strictEqual(actual, md5Hash, `md5 hash does not match for asset named '${assetName} (downloaded from ${url})`);
+    }
 
     suiteTeardown(function() {
         // delete tmp directory containing downloaded files:
