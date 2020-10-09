@@ -8,6 +8,7 @@ export class GitHubReleaseAsset {
     /**
      * Retrieves the URL to a particular asset in the latest release.
      * Note that the accept header has to be set to "application/octet-stream" to download the asset.
+     * If you want to use the token for the download as well, you have to add the following header: "Authorization: token <token>".
      * @param owner The GitHub repo owner, e.g. "viperproject"
      * @param repo The GitHub repo, e.g. "vs-verification-toolbox"
      * @param assetName The name of the asset (as shown in the GitHub UI for the release)
@@ -57,6 +58,7 @@ export class GitHubReleaseAsset {
     /**
      * Retrieves the URL to a particular asset in a release specified by its tag.
      * Note that the accept header has to be set to "application/octet-stream" to download the asset.
+     * If you want to use the token for the download as well, you have to add the following header: "Authorization: token <token>".
      * @param owner The GitHub repo owner, e.g. "viperproject"
      * @param repo The GitHub repo, e.g. "vs-verification-toolbox"
      * @param assetName The name of the asset (as shown in the GitHub UI for the release)
