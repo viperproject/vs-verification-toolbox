@@ -12,14 +12,16 @@ export class GitHubReleaseAsset {
      * @param repo The GitHub repo, e.g. "vs-verification-toolbox"
      * @param assetName The name of the asset (as shown in the GitHub UI for the release)
      * @param includePrereleases Flag to indicate whether prereleases should be considered as well (by default only non-prereleases will be considered)
+     * @param token optional GitHub token to authenticate the request and therefore increase the rate limit from 60 request per hour and IP address
      */
     public static async getLatestAssetUrl(
         owner: string,
         repo: string,
         assetName: string,
-        includePrereleases: boolean = false
+        includePrereleases: boolean = false,
+        token?: string
     ): Promise<string> {
-        const octokit = new Octokit();
+        const octokit = this.getOctokit(token);
         let latestRelease: Release;
         if (includePrereleases) {
             // get the first release which corresponds to the latest pre- or non-pre-release.
@@ -54,14 +56,16 @@ export class GitHubReleaseAsset {
      * @param repo The GitHub repo, e.g. "vs-verification-toolbox"
      * @param assetName The name of the asset (as shown in the GitHub UI for the release)
      * @param tag Name of the git tag
+     * @param token optional GitHub token to authenticate the request and therefore increase the rate limit from 60 request per hour and IP address
      */
     public static async getTaggedAssetUrl(
         owner: string,
         repo: string,
         assetName: string,
-        tag: string
+        tag: string,
+        token?: string
     ): Promise<string> {
-        const octokit = new Octokit();
+        const octokit = this.getOctokit(token);
         // see https://octokit.github.io/rest.js/v18#repos-get-release-by-tag
         const releaseResponse = await octokit.repos.getReleaseByTag({
             owner,
@@ -70,6 +74,20 @@ export class GitHubReleaseAsset {
         });
         const taggedRelease = releaseResponse.data;
         return this.getAssetUrlFromRelease(taggedRelease, assetName);
+    }
+
+    /**
+     * Returns an octokit instance that optionally uses the token for authentiction
+     * @param token personal access token, OAuth token, installation access token, or JSON Web Token for GitHub App authentication
+     */
+    private static getOctokit(token?: string): Octokit {
+        if (token) {
+            return new Octokit({
+                auth: token,
+            });
+        } else {
+            return new Octokit();
+        }
     }
 
     private static getAssetUrlFromRelease(release: Release, assetName: string): Promise<string> {
