@@ -78,7 +78,7 @@ suite("dependencies", () => {
         const tag = "v1.1";
         const md5Hash = "a0948bb73029668fec22741c38b611ef";
         const url = await GitHubReleaseAsset.getTaggedAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName, tag);
+            ASSET_OWNER, ASSET_REPO, assetName, tag, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -88,7 +88,7 @@ suite("dependencies", () => {
         const tag = "v1";
         const md5Hash = "7dcd4caa25bceaabdb2ca525377fab0b";
         const url = await GitHubReleaseAsset.getTaggedAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName, tag);
+            ASSET_OWNER, ASSET_REPO, assetName, tag, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -98,7 +98,7 @@ suite("dependencies", () => {
         // latest prerelease is v1.2
         const md5Hash = "d1b9d86a9ea97fa0d2f9dd32ac99ea57";
         const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true);
+            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -108,7 +108,7 @@ suite("dependencies", () => {
         // latest prerelease is v1.2
         const md5Hash = "aaf83dc77a9fe4e0379476e3d16940f6";
         const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true);
+            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -118,7 +118,7 @@ suite("dependencies", () => {
         // latest non-pre-release is v1
         const md5Hash = "1c9e58ecee1520efcabee1525f858637";
         const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName);
+            ASSET_OWNER, ASSET_REPO, assetName, false, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -128,14 +128,22 @@ suite("dependencies", () => {
         // latest non-pre-release is v1
         const md5Hash = "c3163d654efcc01ff707c3a938764040";
         const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName);
+            ASSET_OWNER, ASSET_REPO, assetName, false, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
+    function getToken(): string | undefined {
+        return process.env["TOKEN"];
+    }
+
     async function downloadAndCheckGitHubAsset(url: string, assetName: string, md5Hash: string): Promise<void> {
-        const headers = {
+        const headers: Record<string, string | string[] | undefined> = {
             "Accept": "application/octet-stream"
         };
+        const token = getToken();
+        if (token) {
+            headers["Authorization"] = `token ${token}`;
+        }
         const myDependency = new Dependency<"remote">(
             TMP_PATH,
             ["remote",
