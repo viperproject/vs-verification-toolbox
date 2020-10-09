@@ -16,6 +16,7 @@ async function main() {
         let extensionTestsEnv;
         if (argv.token || process.env["TOKEN"]) {
             // pass token as environment variable to the extension test:
+            console.log("GitHub token passed as argument or env variable");
             extensionTestsEnv = {
                 "TOKEN": argv.token || process.env["TOKEN"],
             };
@@ -34,7 +35,7 @@ async function main() {
             extensionTestsPath: extensionTestsPath,
             extensionTestsEnv: extensionTestsEnv,
         };
-        
+
         // Download VS Code, unzip it and run the integration test
         await runTests(testOption);
     } catch (err) {
