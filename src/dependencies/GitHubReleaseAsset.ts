@@ -1,4 +1,4 @@
-import { Octokit } from "@octokit/rest";
+import { Octokit, RestEndpointMethodTypes } from "@octokit/rest";
 
 /**
  * Class containing helper functions to facilitate retrieving assets from GitHub releases
@@ -27,14 +27,19 @@ export class GitHubReleaseAsset {
             // get the first release which corresponds to the latest pre- or non-pre-release.
             // note that draft releases do not show up for unauthenticated users
             // see https://octokit.github.io/rest.js/v18#repos-list-releases
-            const { data: releases } = await octokit.repos.listReleases({
-                owner,
-                repo,
-                per_page: 1,
-                page: 1
-            })
-            if (releases.length >= 1) {
-                latestRelease = releases[0];
+            let listReleasesParams: RestEndpointMethodTypes["repos"]["listReleases"]["parameters"] = {
+                owner: owner,
+                repo: repo,
+            }
+            if (token == null) {
+                listReleasesParams.per_page = 1;
+                listReleasesParams.page = 1;
+            }
+            const { data: releases } = await octokit.repos.listReleases(listReleasesParams);
+            const nonDraftReleases = releases
+                .filter(release => !release.draft);
+            if (nonDraftReleases.length >= 1) {
+                latestRelease = nonDraftReleases[0];
             } else {
                 return Promise.reject("list releases did not return any release");
             }
@@ -100,6 +105,7 @@ export class GitHubReleaseAsset {
 }
 
 interface Release {
+    draft: boolean;
     assets: Asset[];
 }
 
