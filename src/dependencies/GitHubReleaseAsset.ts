@@ -22,7 +22,7 @@ export class GitHubReleaseAsset {
         includePrereleases: boolean = false,
         token?: string
     ): Promise<string> {
-        const octokit = this.getOctokit(token);
+        const octokit = this.buildOctokit(token);
         let latestRelease: Release;
         if (includePrereleases) {
             // get the first release which corresponds to the latest pre- or non-pre-release.
@@ -72,7 +72,7 @@ export class GitHubReleaseAsset {
         tag: string,
         token?: string
     ): Promise<string> {
-        const octokit = this.getOctokit(token);
+        const octokit = this.buildOctokit(token);
         // see https://octokit.github.io/rest.js/v18#repos-get-release-by-tag
         const releaseResponse = await octokit.repos.getReleaseByTag({
             owner,
@@ -87,7 +87,7 @@ export class GitHubReleaseAsset {
      * Returns an octokit instance that optionally uses the token for authentiction
      * @param token personal access token, OAuth token, installation access token, or JSON Web Token for GitHub App authentication
      */
-    private static getOctokit(token?: string): Octokit {
+    private static buildOctokit(token?: string): Octokit {
         if (token) {
             return new Octokit({
                 auth: token,

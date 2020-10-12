@@ -13,9 +13,9 @@ export class GitHubZipExtractor implements DependencyInstaller {
     private sequence: InstallerSequence | undefined;
 
     constructor(
-        readonly remoteUrlFn: () => Promise<string>,
-        readonly folderName: string, // non optional as we need to determine whether a download is necessary
-        readonly token?: string
+        private readonly remoteUrlFn: () => Promise<string>,
+        private readonly folderName: string, // non optional as we need to determine whether a download is necessary
+        private readonly token?: string
     ) { }
 
     public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener): Promise<Location> {

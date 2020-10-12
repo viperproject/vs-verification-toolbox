@@ -7,17 +7,17 @@ async function main() {
         const argv = yargs
             .option('token', {
                 description: 'GitHub access token that should be used for GitHub API calls. '
-                    + 'Use the "TOKEN" environment variable for CI as node logs the command incl. arguments',
+                    + 'Use the "GITHUB_TOKEN" environment variable for CI as node logs the command incl. arguments',
                 type: 'string',
             })
             .help() // show help if `--help` is used
             .argv;
 
         let extensionTestsEnv;
-        if (argv.token || process.env["TOKEN"]) {
+        if (argv.token || process.env["GITHUB_TOKEN"]) {
             // pass token as environment variable to the extension test:
             extensionTestsEnv = {
-                "TOKEN": argv.token || process.env["TOKEN"],
+                "GITHUB_TOKEN": argv.token || process.env["GITHUB_TOKEN"],
             };
         }
 

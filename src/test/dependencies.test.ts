@@ -158,7 +158,7 @@ suite("dependencies", () => {
     });
 
     function getToken(): string | undefined {
-        return process.env["TOKEN"];
+        return process.env["GITHUB_TOKEN"];
     }
 
     async function downloadAndCheckGitHubAsset(url: string, assetName: string, md5Hash: string): Promise<void> {
