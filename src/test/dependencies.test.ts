@@ -3,9 +3,8 @@ import * as fs from 'fs';
 import * as assert from 'assert';
 import * as md5File from 'md5-file';
 
-import { Dependency, FileDownloader, InstallerSequence, LocalReference, ZipExtractor } from '..';
+import { Dependency, FileDownloader, GitHubReleaseAsset, GitHubZipExtractor, InstallerSequence, LocalReference, ZipExtractor } from '..';
 import { withProgressInWindow } from '../util';
-import { GitHubReleaseAsset } from '../dependencies';
 
 suite("dependencies", () => {
 
@@ -78,7 +77,7 @@ suite("dependencies", () => {
         const tag = "v1.1";
         const md5Hash = "a0948bb73029668fec22741c38b611ef";
         const url = await GitHubReleaseAsset.getTaggedAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName, tag);
+            ASSET_OWNER, ASSET_REPO, assetName, tag, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -88,7 +87,7 @@ suite("dependencies", () => {
         const tag = "v1";
         const md5Hash = "7dcd4caa25bceaabdb2ca525377fab0b";
         const url = await GitHubReleaseAsset.getTaggedAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName, tag);
+            ASSET_OWNER, ASSET_REPO, assetName, tag, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -98,7 +97,7 @@ suite("dependencies", () => {
         // latest prerelease is v1.2
         const md5Hash = "d1b9d86a9ea97fa0d2f9dd32ac99ea57";
         const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true);
+            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -108,7 +107,7 @@ suite("dependencies", () => {
         // latest prerelease is v1.2
         const md5Hash = "aaf83dc77a9fe4e0379476e3d16940f6";
         const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true);
+            ASSET_OWNER, ASSET_REPO, assetName, /* includePrerelease */ true, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -118,7 +117,7 @@ suite("dependencies", () => {
         // latest non-pre-release is v1
         const md5Hash = "1c9e58ecee1520efcabee1525f858637";
         const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName);
+            ASSET_OWNER, ASSET_REPO, assetName, false, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
@@ -128,14 +127,48 @@ suite("dependencies", () => {
         // latest non-pre-release is v1
         const md5Hash = "c3163d654efcc01ff707c3a938764040";
         const url = await GitHubReleaseAsset.getLatestAssetUrl(
-            ASSET_OWNER, ASSET_REPO, assetName);
+            ASSET_OWNER, ASSET_REPO, assetName, false, getToken());
         await downloadAndCheckGitHubAsset(url, assetName, md5Hash);
     });
 
+    test("GitHubZipExtractor", async function() {
+        this.timeout(SMALL_ASSET_DOWNLOAD_TIMEOUT_MS);
+        const assetName = "small.zip";
+        const unzippedFilename = "small.bin";
+        // latest non-pre-release is v1
+        const md5HashOfExtractedFile = "3cf1da395ac560a38415620e43b0f759"; // md5 of small.bin
+
+        function getUrl(): Promise<string> {
+            return GitHubReleaseAsset.getLatestAssetUrl(
+                ASSET_OWNER, ASSET_REPO, assetName, false, getToken());
+        }
+
+        const myDependency = new Dependency<"remote">(
+            TMP_PATH,
+            ["remote",
+                new GitHubZipExtractor(getUrl, "small", getToken())
+            ]
+        );
+        const { result: unzippedDestination } = await withProgressInWindow(
+            `Downloading and unzipping GitHub asset ${assetName}`,
+            listener => myDependency.install("remote", true, listener));
+        // check md5 of this file
+        const actual: string = await md5File(unzippedDestination.child(unzippedFilename).basePath);
+        assert.strictEqual(actual, md5HashOfExtractedFile, `md5 hash does not match for file named '${unzippedFilename}`);
+    });
+
+    function getToken(): string | undefined {
+        return process.env["GITHUB_TOKEN"];
+    }
+
     async function downloadAndCheckGitHubAsset(url: string, assetName: string, md5Hash: string): Promise<void> {
-        const headers = {
+        const headers: Record<string, string | string[] | undefined> = {
             "Accept": "application/octet-stream"
         };
+        const token = getToken();
+        if (token) {
+            headers["Authorization"] = `token ${token}`;
+        }
         const myDependency = new Dependency<"remote">(
             TMP_PATH,
             ["remote",
