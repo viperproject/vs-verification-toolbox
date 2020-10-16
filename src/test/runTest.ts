@@ -28,13 +28,15 @@ async function main() {
         // The path to test runner
         // Passed to --extensionTestsPath
         const extensionTestsPath = path.resolve(__dirname, './index');
-        
+
         const testOption = {
             extensionDevelopmentPath: extensionDevelopmentPath,
             extensionTestsPath: extensionTestsPath,
             extensionTestsEnv: extensionTestsEnv,
+            // Disable any other extension
+            launchArgs: ["--disable-extensions"],
         };
-        
+
         // Download VS Code, unzip it and run the integration test
         await runTests(testOption);
     } catch (err) {
