@@ -35,7 +35,7 @@ export class ZipExtractor implements DependencyInstaller {
 
 			// we don't usually delete the original zip since that would cause it to get re-downloaded on next install
 			if (this.deleteZip) {
-				fs.unlink(location.basePath);
+				location.remove()
 			}
 
 			return target;

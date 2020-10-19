@@ -29,7 +29,7 @@ export class FileDownloader implements DependencyInstaller {
 
 		await location.mkdir();
 		const temp = location.child(`.${this.filename}.download`);
-		await temp.unlinkIfExists();
+		await temp.remove();
 		const tempFile = fs.createWriteStream(temp.basePath);
 
 		try {
@@ -56,12 +56,12 @@ export class FileDownloader implements DependencyInstaller {
 				tempFile
 			);
 	
-			await target.unlinkIfExists();
+			await target.remove();
 			await fs.move(temp.basePath, target.basePath);
 
 			return target;
 		} catch (e) {
-			await temp.unlinkIfExists();
+			await temp.remove();
 			throw e;
 		}
 	}

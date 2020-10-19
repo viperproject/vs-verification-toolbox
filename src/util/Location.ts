@@ -45,10 +45,31 @@ export class Location {
         return fs.ensureDir(this.basePath);
     }
 
-    public async unlinkIfExists(): Promise<void> {
-        if (await this.exists()) {
-            await fs.unlink(this.basePath);
-        }
+    /**
+     * Remove a path, retrying a few times after a delay in case of error.
+     * If the path does not exist, silently does nothing.
+     */
+    public async remove(maxRetries = 3, retryDelayMs = 1000): Promise<void> {
+        let currRetryNumber = 0;
+        while (true) {
+            if (currRetryNumber >= maxRetries) {
+                // Don't catch errors
+                await fs.remove(this.basePath);
+            } else {
+                // Try again in a few seconds in case of errors
+                try {
+                    await fs.remove(this.basePath);
+                } catch {
+                    currRetryNumber += 1;
+                    await new Promise(
+                        (resolve) => setTimeout(resolve, retryDelayMs)
+                    );
+                    continue;
+                }
+            }
+            // Jump out of the `while true`
+            return;
+        };
     }
 
     public toString(): string {
