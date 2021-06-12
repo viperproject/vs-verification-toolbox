@@ -14,6 +14,10 @@
                 "--extensionDevelopmentPath=${workspaceFolder}",
                 "--extensionTestsPath=${workspaceFolder}/out/test",
             ],
+            "preLaunchTask": {
+                "type": "npm",
+                "script": "pretest"
+            },
             "outFiles": [
                 "${workspaceFolder}/out/test/**/*.js"
             ],
