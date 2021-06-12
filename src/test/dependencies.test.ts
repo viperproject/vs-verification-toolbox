@@ -177,12 +177,25 @@ suite("dependencies", () => {
                 ])
             ]
         );
+        let confirmCallbackCalls: number = 0;
+        async function confirm(): Promise<void> {
+            confirmCallbackCalls++;
+        }
         const { result: downloadDestination } = await withProgressInWindow(
             `Downloading GitHub asset ${assetName}`,
-            listener => myDependency.install("remote", true, listener));
+            listener => myDependency.install("remote", true, listener, confirm));
+        assert.strictEqual(confirmCallbackCalls, 1, `callback to confirm download should only be called once`);
         // check md5 of this file
         const actual: string = await md5File(downloadDestination.basePath);
         assert.strictEqual(actual, md5Hash, `md5 hash does not match for asset named '${assetName} (downloaded from ${url})`);
+
+        // test that installation is aborted if confirmation is rejected:
+        class ConfirmationRejection {}
+        function rejectConfirmation(): Promise<void> {
+            return Promise.reject(new ConfirmationRejection());
+        }
+        assert.rejects(() => myDependency.install("remote", true, undefined, rejectConfirmation), ConfirmationRejection,
+            `expected abort of installation due to rejected confirmation but no exception occurred`);
     }
 
     suiteTeardown(function() {
