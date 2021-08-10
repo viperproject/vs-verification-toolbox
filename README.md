@@ -68,6 +68,11 @@ const myDependency = new Dependency<"remote" | "local">(
 This defines a dependency with two sources (`remote` and `local`) which is installed within a folder named `myDependency` within the global storage folder VS Code provides to your extension, e.g. `~/Library/Application Support/Code/User/globalStorage/<your extension slug>/myDependency`. Of course, you could specify any old path, but this one is probably a good choice for your use case.
 
 If you then run `await myDependency.ensureInstalled("remote")`, it will give you a `Location` referencing the location of the local installation from the `remote` source. If it's already installed, it won't do any extra work; otherwise it will download the file at https://remote.com/file.zip and unzip it into a folder named `unzipped`. Either way, you get back the location of the `unzipped` folder. You can force a reinstall even if it already exists by calling `update` instead of `ensureInstalled`.
+Both functions optionally take a progress listener to report any progress and a `confirm` function as arguments.
+The latter is meant to ask the user for consent before actually downloading and installing anything.
+The `confirm` function is invoked before downloading or unzipping anything.
+In particular, it is not invoked when (1) the dependencies are already installed and an update is not forced or (2) the source is a local reference.
+The `confirm` function returns a promise that should be resolved with `ConfirmResult.Continue` when it's okay to continue with the installation and should be resolved with `ConfirmResult.Cancel` if the installation should be aborted.
 
 If you instead run `await myDependency.ensureInstalled("local")` (or `update`, `install`, etc.), it will simply give you back a reference to the folder at /path/to/external/local/installation, after ensuring that folder actually exists.
 

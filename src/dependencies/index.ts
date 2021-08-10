@@ -4,5 +4,6 @@ export * from './GitHubReleaseAsset';
 export * from './GitHubZipExtractor';
 export * from './ZipExtractor';
 export * from './InstallerSequence';
+export * from './InstallResult';
 export * from './LocalReference';
 export * from './RemoteZipExtractor';

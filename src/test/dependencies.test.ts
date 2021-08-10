@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as assert from 'assert';
 import * as md5File from 'md5-file';
 
-import { Dependency, FileDownloader, GitHubReleaseAsset, GitHubZipExtractor, InstallerSequence, LocalReference, ZipExtractor } from '..';
+import { Canceled, ConfirmResult, Dependency, FileDownloader, GitHubReleaseAsset, GitHubZipExtractor, InstallerSequence, LocalReference, Success, ZipExtractor } from '..';
 import { withProgressInWindow } from '../util';
 
 suite("dependencies", () => {
@@ -153,8 +153,12 @@ suite("dependencies", () => {
             `Downloading and unzipping GitHub asset ${assetName}`,
             listener => myDependency.install("remote", true, listener));
         // check md5 of this file
-        const actual: string = await md5File(unzippedDestination.child(unzippedFilename).basePath);
-        assert.strictEqual(actual, md5HashOfExtractedFile, `md5 hash does not match for file named '${unzippedFilename}`);
+        if (unzippedDestination instanceof Success) {
+            const actual: string = await md5File(unzippedDestination.value.child(unzippedFilename).basePath);
+            assert.strictEqual(actual, md5HashOfExtractedFile, `md5 hash does not match for file named '${unzippedFilename}`);
+        } else {
+            assert.fail(`expected installation success but got ${unzippedDestination}`)
+        }
     });
 
     function getToken(): string | undefined {
@@ -177,12 +181,31 @@ suite("dependencies", () => {
                 ])
             ]
         );
+        let confirmCallbackCalls: number = 0;
+        async function confirm(): Promise<ConfirmResult> {
+            confirmCallbackCalls++;
+            return ConfirmResult.Continue;
+        }
         const { result: downloadDestination } = await withProgressInWindow(
             `Downloading GitHub asset ${assetName}`,
-            listener => myDependency.install("remote", true, listener));
-        // check md5 of this file
-        const actual: string = await md5File(downloadDestination.basePath);
-        assert.strictEqual(actual, md5Hash, `md5 hash does not match for asset named '${assetName} (downloaded from ${url})`);
+            listener => myDependency.install("remote", true, listener, confirm));
+        assert.strictEqual(confirmCallbackCalls, 1, `callback to confirm download should only be called once`);
+        if (downloadDestination instanceof Success) {
+            // check md5 of this file
+            const actual: string = await md5File(downloadDestination.value.basePath);
+            assert.strictEqual(actual, md5Hash, `md5 hash does not match for asset named '${assetName} (downloaded from ${url})`);
+        } else {
+            assert.fail(`expected success but got ${downloadDestination}`);
+        }
+
+        // test that installation is aborted if confirmation is canceled:
+        async function cancelConfirmation(): Promise<ConfirmResult> {
+            return ConfirmResult.Cancel;
+        }
+        const canceledResult = await myDependency.install("remote", true, undefined, cancelConfirmation);
+        if (!(canceledResult instanceof Canceled)) {
+            assert.fail(`expected cancellation of installation due to cancel confirmation but got ${canceledResult}`);
+        }
     }
 
     suiteTeardown(function() {
