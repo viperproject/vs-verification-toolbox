@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import { DependencyInstaller, Location, ProgressListener, InstallerSequence, FileDownloader, ZipExtractor } from '..';
+import { ConfirmResult, DependencyInstaller, FileDownloader, InstallerSequence, InstallResult, Location, ProgressListener, Success, ZipExtractor } from '..';
 
 /**
  * Extension of RemoteZipExtractor with the following features:
@@ -18,10 +18,10 @@ export class GitHubZipExtractor implements DependencyInstaller {
         private readonly token?: string
     ) { }
 
-    public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener, confirm:() => Promise<void>): Promise<Location> {
+    public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener, confirm:() => Promise<ConfirmResult>): Promise<InstallResult<Location>> {
         const target = location.child(this.folderName);
 
-        if (!shouldUpdate && await target.exists()) { return target; }
+        if (!shouldUpdate && await target.exists()) { return new Success(target); }
 
         // we do not ask here for confirmation but defer that to the InstallerSequence
 

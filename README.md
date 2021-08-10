@@ -72,7 +72,7 @@ Both functions optionally take a progress listener to report any progress and a 
 The latter is meant to ask the user for consent before actually downloading and installing anything.
 The `confirm` function is invoked before downloading or unzipping anything.
 In particular, it is not invoked when (1) the dependencies are already installed and an update is not forced or (2) the source is a local reference.
-The `confirm` function returns a promise that should be resolved when it's okay to continue with the installation and should be rejected if the installation should be aborted.
+The `confirm` function returns a promise that should be resolved with `ConfirmResult.Continue` when it's okay to continue with the installation and should be resolved with `ConfirmResult.Cancel` if the installation should be aborted.
 
 If you instead run `await myDependency.ensureInstalled("local")` (or `update`, `install`, etc.), it will simply give you back a reference to the folder at /path/to/external/local/installation, after ensuring that folder actually exists.
 

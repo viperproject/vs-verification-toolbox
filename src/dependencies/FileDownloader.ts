@@ -4,7 +4,7 @@ import got, { Headers, Options, Progress } from 'got';
 import * as stream from 'stream';
 import { promisify } from 'util';
 
-import { DependencyInstaller, Location, ProgressListener } from '..';
+import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Location, ProgressListener, Success } from '..';
 
 
 const pipeline = promisify(stream.pipeline);
@@ -22,13 +22,16 @@ export class FileDownloader implements DependencyInstaller {
 		readonly filename: string = path.basename(remoteUrl)
 	) { }
 
-	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener, confirm:() => Promise<void>): Promise<Location> {
+	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener, confirm:() => Promise<ConfirmResult>): Promise<InstallResult<Location>> {
 		const target = location.child(this.filename);
 
-		if (!shouldUpdate && await target.exists()) { return target; }
+		if (!shouldUpdate && await target.exists()) { return new Success(target); }
 
 		// ask for confirmation:
-		await confirm();
+		const confirmResult = await confirm();
+		if (confirmResult !== ConfirmResult.Continue) {
+			return new Canceled();
+		}
 
 		await location.mkdir();
 		const temp = location.child(`.${this.filename}.download`);
@@ -62,7 +65,7 @@ export class FileDownloader implements DependencyInstaller {
 			await target.remove();
 			await fs.move(temp.basePath, target.basePath);
 
-			return target;
+			return new Success(target);
 		} catch (e) {
 			await temp.remove();
 			throw e;

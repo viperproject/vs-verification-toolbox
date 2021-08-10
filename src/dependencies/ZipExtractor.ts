@@ -1,7 +1,7 @@
 import * as extractZip from 'extract-zip';
 import * as fs from 'fs-extra';
 
-import { DependencyInstaller, Location, ProgressListener } from '..';
+import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Location, ProgressListener, Success } from '..';
 
 /** Extracts the zip at the location provided to `install` to a folder named `targetName`. */
 export class ZipExtractor implements DependencyInstaller {
@@ -10,12 +10,15 @@ export class ZipExtractor implements DependencyInstaller {
 		readonly deleteZip: boolean = false
 	) { }
 
-	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener, confirm:() => Promise<void>): Promise<Location> {
+	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener, confirm:() => Promise<ConfirmResult>): Promise<InstallResult<Location>> {
 		const target = location.enclosingFolder.child(this.targetName);
-		if (!shouldUpdate && await target.exists()) { return target; }
+		if (!shouldUpdate && await target.exists()) { return new Success(target); }
 
 		// ask for confirmation:
-		await confirm();
+		const confirmResult = await confirm();
+		if (confirmResult !== ConfirmResult.Continue) {
+			return new Canceled();
+		}
 
 		try {
 			await target.mkdir();
@@ -41,7 +44,7 @@ export class ZipExtractor implements DependencyInstaller {
 				location.remove()
 			}
 
-			return target;
+			return new Success(target);
 		} catch (err) {
 			await fs.remove(target.basePath);
 			throw err;
