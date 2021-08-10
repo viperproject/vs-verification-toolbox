@@ -15,7 +15,7 @@ export class InstallerSequence {
 
 	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener, confirm:() => Promise<ConfirmResult>): Promise<InstallResult<Location>> {
 		let index = 0;
-		let askedForConfirmation = false;
+		let firstConfirmPromise: Promise<ConfirmResult> | undefined = undefined;
 		let result: InstallResult<Location> = new Success(location);
 		const total = this.installers.length;
 		for (const installer of this.installers) {
@@ -27,11 +27,12 @@ export class InstallerSequence {
 			}
 			function intermediateConfirm(): Promise<ConfirmResult> {
 				// only ask once
-				if (askedForConfirmation) {
-					return Promise.resolve(ConfirmResult.Continue);
+				if (firstConfirmPromise == null) {
+					firstConfirmPromise = confirm();
+					return firstConfirmPromise;
 				} else {
-					askedForConfirmation = true;
-					return confirm();
+					// return same promise:
+					return firstConfirmPromise;
 				}
 			}
 
