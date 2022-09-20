@@ -1,10 +1,10 @@
 import * as path from 'path';
 import * as yargs from 'yargs';
-import { runTests } from 'vscode-test';
+import { runTests } from '@vscode/test-electron';
 
 async function main() {
     try {
-        const argv = yargs
+        const argv = await yargs
             .option('token', {
                 description: 'GitHub access token that should be used for GitHub API calls. '
                     + 'Use the "GITHUB_TOKEN" environment variable for CI as node logs the command incl. arguments',
