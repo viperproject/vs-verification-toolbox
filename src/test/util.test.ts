@@ -1,13 +1,13 @@
 import * as assert from 'assert';
 
-import { Location } from '..';
+import * as util from '..';
 
 suite("util", () => {
     suite("Location", () => {
         test("Basics", async () => {
             const path = (path: string) => path.replace(/\\/g, "/");
 
-            const root = new Location("/tmp/folder");
+            const root = new util.Location("/tmp/folder");
             assert.strictEqual(path(root.basePath), "/tmp/folder");
             assert.strictEqual(
                 path(`${root.enclosingFolder}`),
@@ -25,6 +25,13 @@ suite("util", () => {
             );
             await root.mkdir(); // ensures the folder exists
             assert(await root.exists());
+        });
+    });
+
+    suite("Platform", () => {
+        test("readUbuntuVersion Does not crash", async () => {
+            const ubuntuVersion = await util.readUbuntuVersion();
+            console.log(`Ubuntu version: ${ubuntuVersion}`);
         });
     });
 
