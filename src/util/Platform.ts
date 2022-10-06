@@ -76,6 +76,6 @@ export async function readUbuntuVersion(): Promise<UbuntuVersion | null> {
         return releaseVersion as UbuntuVersion;
     } else {
         console.log(`Unknown Ubuntu release version: ${releaseVersion}`);
-        return UbuntuVersion.Unknown;;
+        return UbuntuVersion.Unknown;
     }
 }
