@@ -37,6 +37,11 @@ export enum UbuntuVersion {
     Unknown = "unknown",
 }
 
+/**
+ * Reads key-value pairs from the `/etc/os-release` file, which on some Linux distributions like
+ * Ubuntu contains information about the version of the operative system. If no such file exists,
+ * the returned value is `null`.
+ */	
 export async function readLinuxReleaseDetails(): Promise<Record<string, string> | null> {
     let data: string;
     try {
@@ -57,7 +62,11 @@ export async function readLinuxReleaseDetails(): Promise<Record<string, string> 
     return releaseDetails
 }
 
-export async function readUbuntuVersion(): Promise<UbuntuVersion | null> {
+/**
+ * Reads the Ubuntu version from the `/etc/os-release` file. If the OS does not seem to be Ubuntu,
+ * the returned value is `null`.
+ */	
+ export async function readUbuntuVersion(): Promise<UbuntuVersion | null> {
     const releaseDetails = await readLinuxReleaseDetails();
     if (releaseDetails == null) {
         return null;
