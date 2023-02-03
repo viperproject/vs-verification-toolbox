@@ -36,7 +36,7 @@
     "node": "*"
   },
   "devDependencies": {
-    "@types/fs-extra": "^9.0.13",
+    "@types/fs-extra": "^11.0.1",
     "@types/glob": "^8.0.1",
     "@types/mocha": "^9.1.1",
     "@types/vscode": "^1.43.0",
@@ -61,7 +61,7 @@
   "dependencies": {
     "@octokit/rest": "^19.0.7",
     "extract-zip": "^2.0.0",
-    "fs-extra": "^9.0.13",
+    "fs-extra": "^11.1.0",
     "got": "^11.8.5"
   }
 }
