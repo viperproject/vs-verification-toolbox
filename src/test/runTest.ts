@@ -1,8 +1,12 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import * as yargs from 'yargs';
 import { runTests } from '@vscode/test-electron';
 
-async function main() {
+const PROJECT_ROOT = path.join(__dirname, "..", "..");
+const DATA_ROOT = path.join(PROJECT_ROOT, "src", "test", "data");
+
+async function main(): Promise<void> {
     try {
         const argv = await yargs
             .option('token', {
@@ -12,6 +16,10 @@ async function main() {
             })
             .help() // show help if `--help` is used
             .argv;
+
+        console.info("Reading VS Code version...");
+        const vscode_version = fs.readFileSync(path.join(DATA_ROOT, "vscode-version")).toString().trim();
+        console.info(`Tests will use VS Code version '${vscode_version}'`);
 
         let extensionTestsEnv;
         if (argv.token || process.env["GITHUB_TOKEN"]) {
@@ -30,6 +38,7 @@ async function main() {
         const extensionTestsPath = path.resolve(__dirname, './index');
 
         const testOption = {
+            version: vscode_version,
             extensionDevelopmentPath: extensionDevelopmentPath,
             extensionTestsPath: extensionTestsPath,
             extensionTestsEnv: extensionTestsEnv,
@@ -45,4 +54,7 @@ async function main() {
     }
 }
 
-main();
+main().catch((err) => {
+    console.error(`main function has ended with an error: ${err}`);
+    process.exit(1);
+});

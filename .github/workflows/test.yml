@@ -2,12 +2,12 @@ name: NPM Tests
 
 on:
   push:
-    branches: 'master'
   pull_request:
   workflow_dispatch:
 
 jobs:
   test:
+    name: test - ${{ matrix.os }}
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
