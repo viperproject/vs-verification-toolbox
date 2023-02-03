@@ -39,7 +39,7 @@
     "@types/fs-extra": "^11.0.1",
     "@types/glob": "^8.0.1",
     "@types/mocha": "^10.0.1",
-    "@types/vscode": "^1.43.0",
+    "@types/vscode": "^1.74.1",
     "@types/yargs": "^17.0.12",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.38.0",
