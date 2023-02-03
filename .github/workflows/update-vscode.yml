@@ -32,6 +32,7 @@ jobs:
           echo "TEST_VSCODE_VERSION=$TEST_VSCODE_VERSION" >> $GITHUB_ENV
           echo "LATEST_VSCODE_VERSION=$LATEST_VSCODE_VERSION" >> $GITHUB_ENV
       - name: Open a pull request
+        id: pr
         uses: peter-evans/create-pull-request@v4
         if: env.TEST_VSCODE_VERSION != env.LATEST_VSCODE_VERSION
         with:
@@ -50,5 +51,5 @@ jobs:
         if: env.TEST_VSCODE_VERSION != env.LATEST_VSCODE_VERSION
         with:
           token: ${{ secrets.VIPER_ADMIN_TOKEN }}
-          issue-number: ${{ steps.pr.outputs.pull-request-number }}"
+          issue-number: ${{ steps.pr.outputs.pull-request-number }}
           body: bors merge
