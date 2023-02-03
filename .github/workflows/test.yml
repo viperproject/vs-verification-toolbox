@@ -16,10 +16,10 @@ jobs:
 
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Cache npm
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: .npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -29,9 +29,14 @@ jobs:
       - name: Install NPM dependencies
         run: npm ci --cache .npm --prefer-offline
 
-      - name: Run tests (headless)
-        uses: GabrielBB/xvfb-action@v1.0
-        with:
-          run: npm test
+      - name: Run tests (headless - non-ubuntu)
+        if: "!startsWith(matrix.os, 'ubuntu')"
+        run: npm test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run tests (headless - ubuntu only)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: xvfb-run -a npm test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
