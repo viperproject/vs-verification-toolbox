@@ -46,7 +46,7 @@
     "@vscode/test-electron": "^2.2.3",
     "eslint": "^8.35.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsdoc": "^39.8.0",
+    "eslint-plugin-jsdoc": "^40.0.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-unicorn": "^45.0.2",
