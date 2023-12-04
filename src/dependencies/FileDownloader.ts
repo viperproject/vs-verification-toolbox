@@ -1,6 +1,7 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import got, { Headers, Options, Progress } from 'got';
+import got from 'got';
+import http from 'http';
 import * as stream from 'stream';
 import { promisify } from 'util';
 
@@ -18,7 +19,7 @@ export class FileDownloader implements DependencyInstaller {
 	 */
 	constructor(
 		readonly remoteUrl: string,
-		readonly headers: Headers = {},
+		readonly headers: http.OutgoingHttpHeaders = {},
 		readonly filename: string = path.basename(remoteUrl)
 	) { }
 
@@ -52,7 +53,7 @@ export class FileDownloader implements DependencyInstaller {
 				got
 					.stream(this.remoteUrl, options)
 					.on('redirect', () => skipNextProgress = true)
-					.on('downloadProgress', (prog: Progress) => { 
+					.on('downloadProgress', (prog: got.Progress) => { 
 						if (skipNextProgress) { 
 							skipNextProgress = false; 
 						} else { 

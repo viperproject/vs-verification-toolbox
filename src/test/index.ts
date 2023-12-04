@@ -1,9 +1,9 @@
 import { glob } from 'glob';
 import * as path from 'path';
-import * as Mocha from 'mocha';
+import Mocha from 'mocha';
 
 // kept as-is (except for the mocha config) from `yo code` extension template
-export async function run(): Promise<void> {
+export const run = async () => {
     // Create the mocha test
     const mocha = new Mocha({
         ui: 'tdd',
@@ -32,4 +32,4 @@ export async function run(): Promise<void> {
             e(err);
         }
     });
-}
+};

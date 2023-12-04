@@ -154,7 +154,7 @@ module.exports = {
         "import/no-extraneous-dependencies": [
             "error",
             {
-                "devDependencies": false
+                "devDependencies": ["src/test/*.ts"]
             }
         ],
         "import/no-internal-modules": "off",

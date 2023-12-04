@@ -18,13 +18,13 @@ suite("util", () => {
                 "Location(/tmp/folder/sub/path)"
             );
             assert.strictEqual(path(root.path("sub", "path")), "/tmp/folder/sub/path");
-            assert(
+            assert.ok(
                 root.executable("run") === "/tmp/folder/run"
                 || root.executable("run") === "\\tmp\\folder\\run.exe",
                 `unexpected executable path: ${root.executable("run")}`
             );
             await root.mkdir(); // ensures the folder exists
-            assert(await root.exists());
+            assert.ok(await root.exists());
         });
     });
 
