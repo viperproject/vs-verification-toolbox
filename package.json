@@ -43,7 +43,7 @@
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.13.1",
     "@vscode/test-electron": "^2.3.8",
-    "eslint": "^8.55.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-jsdoc": "^46.9.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
