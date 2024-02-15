@@ -1,4 +1,5 @@
-import { ConfirmResult, DependencyInstaller, InstallResult, Location, ProgressListener, Success } from '..';
+import { ConfirmResult, DependencyInstaller, InstallResult, Success } from './';
+import { Location, ProgressListener } from '../util';
 
 export class InstallerSequence {
 	constructor(readonly installers: DependencyInstaller[]) {

@@ -1,6 +1,7 @@
 import * as path from 'path';
 
-import { ConfirmResult, DependencyInstaller, FileDownloader, Location, InstallerSequence, InstallResult, ProgressListener, Success, ZipExtractor } from '..';
+import { ConfirmResult, DependencyInstaller, FileDownloader, InstallerSequence, InstallResult, Success, ZipExtractor } from './';
+import { Location, ProgressListener } from '../util';
 
 export class RemoteZipExtractor implements DependencyInstaller {
     private readonly sequence: InstallerSequence;

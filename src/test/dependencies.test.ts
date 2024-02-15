@@ -4,7 +4,7 @@ import * as assert from 'assert';
 import * as md5File from 'md5-file';
 
 import { Canceled, ConfirmResult, Dependency, FileDownloader, GitHubReleaseAsset, GitHubZipExtractor, InstallerSequence, LocalReference, Success, ZipExtractor } from '..';
-import { withProgressInWindow } from '../util';
+import { withProgressInWindow } from '../vscode-util';
 
 suite("dependencies", () => {
 
