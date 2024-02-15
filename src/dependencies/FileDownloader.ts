@@ -4,7 +4,8 @@ import got, { Headers, Options, Progress } from 'got';
 import * as stream from 'stream';
 import { promisify } from 'util';
 
-import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Location, ProgressListener, Success } from '..';
+import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Success } from './';
+import { Location, ProgressListener } from '../util';
 
 
 const pipeline = promisify(stream.pipeline);

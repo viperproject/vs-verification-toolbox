@@ -1,5 +1,5 @@
 export interface InstallResult<T> {
-	isSuccess(): boolean
+	isSuccess(): boolean;
 }
 
 export class Success<T> implements InstallResult<T> {

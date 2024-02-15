@@ -1,6 +1,7 @@
 import * as path from 'path';
 
-import { ConfirmResult, InstallResult, Location, ProgressListener, Success } from '..';
+import { ConfirmResult, InstallResult, Success } from './';
+import { Location, ProgressListener } from '../util';
 
 /**
  * Manages the installation for a dependency, maintaining separate installations for each source (in a folder using their name).

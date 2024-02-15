@@ -1,7 +1,8 @@
 import * as extractZip from 'extract-zip';
 import * as fs from 'fs-extra';
 
-import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Location, ProgressListener, Success } from '..';
+import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Success } from './';
+import { Location, ProgressListener } from '../util';
 
 /** Extracts the zip at the location provided to `install` to a folder named `targetName`. */
 export class ZipExtractor implements DependencyInstaller {
@@ -41,7 +42,7 @@ export class ZipExtractor implements DependencyInstaller {
 
 			// we don't usually delete the original zip since that would cause it to get re-downloaded on next install
 			if (this.deleteZip) {
-				location.remove()
+				location.remove();
 			}
 
 			return new Success(target);
