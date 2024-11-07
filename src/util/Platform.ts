@@ -1,4 +1,4 @@
-import * as os from 'os';
+import * as os from 'node:os';
 import * as fs from 'fs-extra';
 
 export enum Platform {
@@ -42,7 +42,8 @@ export enum UbuntuVersion {
  * Ubuntu contains information about the version of the operative system. If no such file exists,
  * the returned value is `null`.
  */	
-export async function readLinuxReleaseDetails(): Promise<Record<string, string> | null> {
+// export async function readLinuxReleaseDetails(): Promise<Record<string, string> | null> {
+export const readLinuxReleaseDetails: () => Promise<Record<string, string> | null> = async () => {
     let data: string;
     try {
         data = await fs.readFile("/etc/os-release", "utf8");
@@ -59,25 +60,25 @@ export async function readLinuxReleaseDetails(): Promise<Record<string, string> 
             releaseDetails[words[0].trim().toLowerCase()] = words[1].trim().replace(/^"(.*)"$/, '$1');
         }
     });
-    return releaseDetails
-}
+    return releaseDetails;
+};
 
 /**
  * Reads the Ubuntu version from the `/etc/os-release` file. If the OS does not seem to be Ubuntu,
  * the returned value is `null`.
  */	
- export async function readUbuntuVersion(): Promise<UbuntuVersion | null> {
+ export const readUbuntuVersion: () => Promise<UbuntuVersion | null> = async () => {
     const releaseDetails = await readLinuxReleaseDetails();
     if (releaseDetails == null) {
         return null;
     }
     const releaseName = releaseDetails.name;
-    if (releaseName != "Ubuntu") {
+    if (releaseName !== "Ubuntu") {
         console.log(`Unknown Linux release name: ${releaseName}`);
         return null;
     }
     const releaseVersion = releaseDetails.version_id;
-    if (releaseVersion == undefined) {
+    if (releaseVersion === undefined) {
         console.log("The Ubuntu release version is undefined");
         return UbuntuVersion.Unknown;
     }
@@ -87,4 +88,4 @@ export async function readLinuxReleaseDetails(): Promise<Record<string, string> 
         console.log(`Unknown Ubuntu release version: ${releaseVersion}`);
         return UbuntuVersion.Unknown;
     }
-}
+};

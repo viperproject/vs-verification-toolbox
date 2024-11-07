@@ -1,12 +1,10 @@
-import * as path from 'path';
-
-import { ConfirmResult, DependencyInstaller, FileDownloader, InstallerSequence, InstallResult, Success, ZipExtractor } from './';
-import { Location, ProgressListener } from '../util';
+import { ConfirmResult, DependencyInstaller, FileDownloader, InstallerSequence, InstallResult, Success, ZipExtractor } from './index.js';
+import { Location, ProgressListener } from '../util/index.js';
 
 /**
  * Extension of RemoteZipExtractor with the following features:
  * - no remote URL needed at construction time: a (potentially expensive) computation of the remote URL is only 
- *   performed when a download will actually take place.
+ * performed when a download will actually take place.
  * - the correct header for downloading a GitHub release asset is set
  * - if a GitHub token is provided it is used to perform the download as an authenticated user
  */
@@ -32,8 +30,8 @@ export class GitHubZipExtractor implements DependencyInstaller {
             const downloadHeaders: Record<string, string | string[] | undefined> = {
                 "Accept": "application/octet-stream"
             };
-            if (this.token) {
-                downloadHeaders["Authorization"] = `token ${this.token}`;
+            if (this.token != null) {
+                downloadHeaders.Authorization = `token ${this.token}`;
             }
 
             // lazily initialize sequence:

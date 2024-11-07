@@ -1,11 +1,11 @@
 import * as fs from 'fs-extra';
-import * as path from 'path';
+import * as path from 'node:path';
 import got, { Headers, Options, Progress } from 'got';
 import * as stream from 'stream';
 import { promisify } from 'util';
 
-import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Success } from './';
-import { Location, ProgressListener } from '../util';
+import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Success } from './index.js';
+import { Location, ProgressListener } from '../util/index.js';
 
 
 const pipeline = promisify(stream.pipeline);

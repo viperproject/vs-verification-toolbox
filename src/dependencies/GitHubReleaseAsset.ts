@@ -28,10 +28,10 @@ export class GitHubReleaseAsset {
             // get the first release which corresponds to the latest pre- or non-pre-release.
             // note that draft releases do not show up for unauthenticated users
             // see https://octokit.github.io/rest.js/v18#repos-list-releases
-            let listReleasesParams: RestEndpointMethodTypes["repos"]["listReleases"]["parameters"] = {
-                owner: owner,
-                repo: repo,
-            }
+            const listReleasesParams: RestEndpointMethodTypes["repos"]["listReleases"]["parameters"] = {
+                owner,
+                repo,
+            };
             if (token == null) {
                 listReleasesParams.per_page = 1;
                 listReleasesParams.page = 1;
@@ -88,7 +88,7 @@ export class GitHubReleaseAsset {
      * @param token personal access token, OAuth token, installation access token, or JSON Web Token for GitHub App authentication
      */
     private static buildOctokit(token?: string): Octokit {
-        if (token) {
+        if (token != null) {
             return new Octokit({
                 auth: token,
             });

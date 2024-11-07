@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 export interface InstallResult<T> {
 	isSuccess(): boolean;
 }
@@ -7,8 +8,8 @@ export class Success<T> implements InstallResult<T> {
 	private readonly _value: T;
 
 	/**
- 	 * @param t non-null
- 	 */
+	 * @param t non-null
+	 */
 	constructor(t: T) {
 		if (t == null) {
 			throw new Error(`Invalid argument: Success(v) can only be constructed with a non-null value`);

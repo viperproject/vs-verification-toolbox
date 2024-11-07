@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
-import { platform } from 'os';
-import * as path from 'path';
+import { platform } from 'node:os';
+import * as path from 'node:path';
 
 /**
  * A simple representation of a folder in the file system, with some convenient methods for navigating through the hierarchy.

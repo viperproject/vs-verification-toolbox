@@ -1,5 +1,5 @@
-import { ConfirmResult, DependencyInstaller, InstallResult, Success } from './';
-import { Location, ProgressListener } from '../util';
+import { ConfirmResult, DependencyInstaller, InstallResult, Success } from './index.js';
+import { Location, ProgressListener } from '../util/index.js';
 
 export class InstallerSequence {
 	constructor(readonly installers: DependencyInstaller[]) {
@@ -16,17 +16,17 @@ export class InstallerSequence {
 
 	public async install(location: Location, shouldUpdate: boolean, progressListener: ProgressListener, confirm:() => Promise<ConfirmResult>): Promise<InstallResult<Location>> {
 		let index = 0;
-		let firstConfirmPromise: Promise<ConfirmResult> | undefined = undefined;
+		let firstConfirmPromise: Promise<ConfirmResult> | undefined;
 		let result: InstallResult<Location> = new Success(location);
 		const total = this.installers.length;
 		for (const installer of this.installers) {
-			function intermediateListener(fraction: number, message: string) {
+			const intermediateListener = (fraction: number, message: string) => {
 				progressListener(
 					(index + fraction) / total,
 					`${message} (step ${index + 1} of ${total})`
 				);
-			}
-			function intermediateConfirm(): Promise<ConfirmResult> {
+			};
+			const intermediateConfirm = () => {
 				// only ask once
 				if (firstConfirmPromise == null) {
 					firstConfirmPromise = confirm();
@@ -35,7 +35,7 @@ export class InstallerSequence {
 					// return same promise:
 					return firstConfirmPromise;
 				}
-			}
+			};
 
 			if (result instanceof Success) {
 				// continue with next installer

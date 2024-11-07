@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { ProgressListener } from '../util';
+import { ProgressListener } from '../util/index.js';
 
 /**
  * Runs an asynchronous task, forwarding the progress it reports to the VS Code window as a notification with the given title.

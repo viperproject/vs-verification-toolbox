@@ -146,7 +146,7 @@ module.exports = {
         "eol-last": "off",
         "eqeqeq": [
             "error",
-            "always"
+            "smart"
         ],
         "guard-for-in": "error",
         "id-denylist": "error",

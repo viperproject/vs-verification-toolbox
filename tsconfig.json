@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
+		"module": "node16",
+		"moduleResolution": "node16",
 		"target": "es6",
 		"outDir": "out",
 		"lib": [
@@ -12,6 +13,7 @@
 		"strict": true, /* enable all strict type-checking options */
 		/* Additional Checks */
 		"noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
+		"skipLibCheck": true, // currently, lru-cache fails due to the strictBuiltinIteratorReturn option introduced in TS 5.6 */
 	},
 	"include": [
 		"src"

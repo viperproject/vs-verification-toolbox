@@ -1,14 +1,18 @@
-import * as path from 'path';
-import * as fs from 'fs';
-import * as assert from 'assert';
+/* eslint-disable import/no-extraneous-dependencies */
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import * as fs from 'node:fs';
+import * as assert from 'node:assert';
 import * as md5File from 'md5-file';
 
-import { Canceled, ConfirmResult, Dependency, FileDownloader, GitHubReleaseAsset, GitHubZipExtractor, InstallerSequence, LocalReference, Success, ZipExtractor } from '..';
-import { withProgressInWindow } from '../vscode-util';
+import { Canceled, ConfirmResult, Dependency, FileDownloader, GitHubReleaseAsset, GitHubZipExtractor, InstallerSequence, LocalReference, Success, ZipExtractor } from '../index.js';
+import { withProgressInWindow } from '../vscode-util/index.js';
 
 suite("dependencies", () => {
 
-    const PROJECT_ROOT = path.join(__dirname, "../../");
+    const FILE_NAME = fileURLToPath(import.meta.url); // get the resolved path to the file
+    const DIRNAME = path.dirname(FILE_NAME); // get the name of the directory
+    const PROJECT_ROOT = path.join(DIRNAME, "../../");
     const TMP_PATH: string = path.join(PROJECT_ROOT, "src", "test", "tmp");
     const HTTP_DOWNLOAD_URL: string = "http://viper.ethz.ch/examples/";
     const HTTP_DOWNLOAD_TIMEOUT_MS: number = 10 * 1000; // 10s
@@ -20,7 +24,7 @@ suite("dependencies", () => {
     const ASSET_OWNER: string = "viperproject";
     const ASSET_REPO: string = "vs-verification-toolbox-release-testing";
 
-    suiteSetup(function() {
+    suiteSetup(() => {
         // create a tmp directory for downloading files to it
         if (!fs.existsSync(TMP_PATH)) {
             fs.mkdirSync(TMP_PATH);
@@ -138,10 +142,9 @@ suite("dependencies", () => {
         // latest non-pre-release is v1
         const md5HashOfExtractedFile = "3cf1da395ac560a38415620e43b0f759"; // md5 of small.bin
 
-        function getUrl(): Promise<string> {
-            return GitHubReleaseAsset.getLatestAssetUrl(
+        const getUrl = () =>
+            GitHubReleaseAsset.getLatestAssetUrl(
                 ASSET_OWNER, ASSET_REPO, assetName, false, getToken());
-        }
 
         const myDependency = new Dependency<"remote">(
             TMP_PATH,
@@ -154,24 +157,22 @@ suite("dependencies", () => {
             listener => myDependency.install("remote", true, listener));
         // check md5 of this file
         if (unzippedDestination instanceof Success) {
-            const actual: string = await md5File(unzippedDestination.value.child(unzippedFilename).basePath);
+            const actual: string = await md5File.default(unzippedDestination.value.child(unzippedFilename).basePath);
             assert.strictEqual(actual, md5HashOfExtractedFile, `md5 hash does not match for file named '${unzippedFilename}`);
         } else {
-            assert.fail(`expected installation success but got ${unzippedDestination}`)
+            assert.fail(`expected installation success but got ${unzippedDestination}`);
         }
     });
 
-    function getToken(): string | undefined {
-        return process.env["GITHUB_TOKEN"];
-    }
+    const getToken: () => string | undefined = () => process.env.GITHUB_TOKEN;
 
-    async function downloadAndCheckGitHubAsset(url: string, assetName: string, md5Hash: string): Promise<void> {
+    const downloadAndCheckGitHubAsset: (url: string, assetName: string, md5Hash: string) => Promise<void> = async (url, assetName, md5Hash) => {
         const headers: Record<string, string | string[] | undefined> = {
             "Accept": "application/octet-stream"
         };
         const token = getToken();
-        if (token) {
-            headers["Authorization"] = `token ${token}`;
+        if (token !=  null) {
+            headers.Authorization = `token ${token}`;
         }
         const myDependency = new Dependency<"remote">(
             TMP_PATH,
@@ -182,33 +183,31 @@ suite("dependencies", () => {
             ]
         );
         let confirmCallbackCalls: number = 0;
-        async function confirm(): Promise<ConfirmResult> {
+        const confirm: () => Promise<ConfirmResult> = async () => {
             confirmCallbackCalls++;
             return ConfirmResult.Continue;
-        }
+        };
         const { result: downloadDestination } = await withProgressInWindow(
             `Downloading GitHub asset ${assetName}`,
             listener => myDependency.install("remote", true, listener, confirm));
         assert.strictEqual(confirmCallbackCalls, 1, `callback to confirm download should only be called once`);
         if (downloadDestination instanceof Success) {
             // check md5 of this file
-            const actual: string = await md5File(downloadDestination.value.basePath);
+            const actual: string = await md5File.default(downloadDestination.value.basePath);
             assert.strictEqual(actual, md5Hash, `md5 hash does not match for asset named '${assetName} (downloaded from ${url})`);
         } else {
             assert.fail(`expected success but got ${downloadDestination}`);
         }
 
         // test that installation is aborted if confirmation is canceled:
-        async function cancelConfirmation(): Promise<ConfirmResult> {
-            return ConfirmResult.Cancel;
-        }
+        const cancelConfirmation: () => Promise<ConfirmResult> = async () => ConfirmResult.Cancel;
         const canceledResult = await myDependency.install("remote", true, undefined, cancelConfirmation);
         if (!(canceledResult instanceof Canceled)) {
             assert.fail(`expected cancellation of installation due to cancel confirmation but got ${canceledResult}`);
         }
-    }
+    };
 
-    suiteTeardown(function() {
+    suiteTeardown(() => {
         // delete tmp directory containing downloaded files:
         if (fs.existsSync(TMP_PATH)) {
             fs.rmdirSync(TMP_PATH, { recursive: true });
