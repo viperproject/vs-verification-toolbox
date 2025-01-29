@@ -6,6 +6,10 @@ updates:
     schedule:
       interval: monthly
       day: monday
+    ignore:
+      - dependency-name: "@octokit/rest"
+        # starting with v21, @octokit/rest is using ESM
+        versions: ^21.0.0
     groups:
       all:
         patterns:
