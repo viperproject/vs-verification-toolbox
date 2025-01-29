@@ -1,7 +1,22 @@
 {
   "name": "vs-verification-toolbox",
   "version": "1.0.0",
+  "publisher": "viper-admin",
   "description": "Useful component to build VS Code extensions for verifiers.",
+  "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viperproject/vs-verification-toolbox.git"
+  },
+  "homepage": "https://github.com/viperproject/vs-verification-toolbox#readme",
+  "bugs": {
+    "url": "https://github.com/viperproject/vs-verification-toolbox/issues"
+  },
+  "author": {
+		"name": "Programming Methodology Group, ETH Zürich",
+		"email": "viper@inf.ethz.ch",
+		"url": "https://viper.ethz.ch"
+	},
   "main": "out/index.js",
   "activationEvents": [
     "this property is required to run vs code tests"
@@ -15,22 +30,12 @@
     "test": "node ./out/test/runTest.js",
     "prepare": "npm run compile"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/viperproject/vs-verification-toolbox.git"
-  },
   "keywords": [
     "vscode",
     "verification",
     "npm",
     "node"
   ],
-  "author": "Julian Dunskus",
-  "license": "MPL-2.0",
-  "bugs": {
-    "url": "https://github.com/viperproject/vs-verification-toolbox/issues"
-  },
-  "homepage": "https://github.com/viperproject/vs-verification-toolbox#readme",
   "engines": {
     "vscode": "^1.43.0",
     "node": "*"
@@ -58,7 +63,7 @@
     "yargs": "^17.7.2"
   },
   "dependencies": {
-    "@octokit/rest": "^20.1.1",
+    "@octokit/rest": "^20.0.2",
     "extract-zip": "^2.0.0",
     "fs-extra": "^11.3.0",
     "got": "^11.8.6"
