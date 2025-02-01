@@ -63,7 +63,7 @@
     "yargs": "^17.7.2"
   },
   "dependencies": {
-    "@octokit/rest": "^20.0.2",
+    "@octokit/rest": "^20.1.1",
     "extract-zip": "^2.0.0",
     "fs-extra": "^11.3.0",
     "got": "^11.8.6"
