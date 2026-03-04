@@ -37,18 +37,18 @@
     "node"
   ],
   "engines": {
-    "vscode": "^1.43.0",
+    "vscode": "^1.98.0",
     "node": "*"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
-    "@types/vscode": "^1.43.0",
+    "@types/vscode": "^1.98.0",
     "@types/yargs": "^17.0.33",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.31.1",
     "@vscode/test-electron": "^2.5.2",
-    "eslint": "^10.0.2",
+    "eslint": "^9.36.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsdoc": "^62.7.1",
     "eslint-plugin-prefer-arrow": "^1.2.3",
