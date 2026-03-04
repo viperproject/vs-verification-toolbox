@@ -40,7 +40,7 @@ async function main(): Promise<void> {
 
         // The path to test runner
         // Passed to --extensionTestsPath
-        const extensionTestsPath = path.resolve(__dirname, './index');
+        const extensionTestsPath = path.resolve(__dirname, './index.js');
 
         const testOption = {
             version: vscode_version,
