@@ -1,8 +1,8 @@
-import * as extractZip from 'extract-zip';
+import extractZip from 'extract-zip';
 import * as fs from 'fs-extra';
 
-import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Success } from './';
-import { Location, ProgressListener } from '../util';
+import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Success } from './index.js';
+import { Location, ProgressListener } from '../util/index.js';
 
 /** Extracts the zip at the location provided to `install` to a folder named `targetName`. */
 export class ZipExtractor implements DependencyInstaller {

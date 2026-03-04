@@ -1,10 +1,15 @@
 import * as path from 'path';
 import * as fs from 'fs';
 import * as assert from 'assert';
-import * as md5File from 'md5-file';
+import md5File from 'md5-file';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-import { Canceled, ConfirmResult, Dependency, FileDownloader, GitHubReleaseAsset, GitHubZipExtractor, InstallerSequence, LocalReference, Success, ZipExtractor } from '..';
-import { withProgressInWindow } from '../vscode-util';
+import { Canceled, ConfirmResult, Dependency, FileDownloader, GitHubReleaseAsset, GitHubZipExtractor, InstallerSequence, LocalReference, Success, ZipExtractor } from '../index.js';
+import { withProgressInWindow } from '../vscode-util/index.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 suite("dependencies", () => {
 
@@ -211,7 +216,7 @@ suite("dependencies", () => {
     suiteTeardown(function() {
         // delete tmp directory containing downloaded files:
         if (fs.existsSync(TMP_PATH)) {
-            fs.rmdirSync(TMP_PATH, { recursive: true });
+            fs.rmSync(TMP_PATH, { recursive: true });
         }
     });
 });

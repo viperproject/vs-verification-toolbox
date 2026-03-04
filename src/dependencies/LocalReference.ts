@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra';
 
-import { ConfirmResult, DependencyInstaller, InstallResult, Success } from './';
-import { Location, ProgressListener } from '../util';
+import { ConfirmResult, DependencyInstaller, InstallResult, Success } from './index.js';
+import { Location, ProgressListener } from '../util/index.js';
 
 export class LocalReference implements DependencyInstaller {
 	constructor(

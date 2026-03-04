@@ -1,7 +1,7 @@
 import * as path from 'path';
 
-import { ConfirmResult, InstallResult, Success } from './';
-import { Location, ProgressListener } from '../util';
+import { ConfirmResult, InstallResult, Success } from './index.js';
+import { Location, ProgressListener } from '../util/index.js';
 
 /**
  * Manages the installation for a dependency, maintaining separate installations for each source (in a folder using their name).

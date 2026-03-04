@@ -1,6 +1,11 @@
 import { glob } from 'glob';
 import * as path from 'path';
-import * as Mocha from 'mocha';
+import Mocha from 'mocha';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // kept as-is (except for the mocha config) from `yo code` extension template
 export async function run(): Promise<void> {
