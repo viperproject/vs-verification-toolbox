@@ -3,6 +3,7 @@ import * as path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import { runTests } from '@vscode/test-electron';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -13,7 +14,7 @@ const DATA_ROOT = path.join(PROJECT_ROOT, "src", "test", "data");
 
 async function main(): Promise<void> {
     try {
-        const argv = await yargs(process.argv.slice(2))
+        const argv = await yargs(hideBin(process.argv))
             .option('token', {
                 description: 'GitHub access token that should be used for GitHub API calls. '
                     + 'Use the "GITHUB_TOKEN" environment variable for CI as node logs the command incl. arguments',
