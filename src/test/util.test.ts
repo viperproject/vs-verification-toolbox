@@ -1,6 +1,6 @@
-import * as assert from 'assert';
+import assert from 'assert';
 
-import * as util from '..';
+import * as util from '../index.js';
 
 suite("util", () => {
     suite("Location", () => {

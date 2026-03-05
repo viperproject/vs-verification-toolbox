@@ -1,7 +1,7 @@
 import * as path from 'path';
 
-import { ConfirmResult, DependencyInstaller, FileDownloader, InstallerSequence, InstallResult, Success, ZipExtractor } from './';
-import { Location, ProgressListener } from '../util';
+import { ConfirmResult, DependencyInstaller, FileDownloader, InstallerSequence, InstallResult, Success, ZipExtractor } from './index.js';
+import { Location, ProgressListener } from '../util/index.js';
 
 /**
  * Extension of RemoteZipExtractor with the following features:

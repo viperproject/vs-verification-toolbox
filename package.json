@@ -13,10 +13,11 @@
     "url": "https://github.com/viperproject/vs-verification-toolbox/issues"
   },
   "author": {
-		"name": "Programming Methodology Group, ETH Zürich",
-		"email": "viper@inf.ethz.ch",
-		"url": "https://viper.ethz.ch"
-	},
+    "name": "Programming Methodology Group, ETH Zürich",
+    "email": "viper@inf.ethz.ch",
+    "url": "https://viper.ethz.ch"
+  },
+  "type": "module",
   "main": "out/index.js",
   "activationEvents": [
     "this property is required to run vs code tests"
@@ -25,7 +26,7 @@
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "lint": "tslint --config ./tslint.json --project tsconfig.json './src/**/*.ts'",
+    "lint": "eslint './src/**/*.ts'",
     "pretest": "npm run compile",
     "test": "node ./out/test/runTest.js",
     "prepare": "npm run compile"
@@ -37,14 +38,14 @@
     "node"
   ],
   "engines": {
-    "vscode": "^1.98.0",
+    "vscode": "^1.100.0",
     "node": "*"
   },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/mocha": "^10.0.6",
-    "@types/vscode": "^1.98.0",
-    "@types/yargs": "^17.0.33",
+    "@types/vscode": "^1.100.0",
+    "@types/yargs": "^17.0.35",
     "@typescript-eslint/eslint-plugin": "^8.56.1",
     "@typescript-eslint/parser": "^8.31.1",
     "@vscode/test-electron": "^2.5.2",
@@ -57,15 +58,13 @@
     "glob": "^13.0.6",
     "md5-file": "^5.0.0",
     "mocha": "^11.7.5",
-    "tslint": "^6.1.0",
-    "tslint-config-prettier": "^1.18.0",
     "typescript": "^5.9.3",
-    "yargs": "^17.7.2"
+    "yargs": "^18.0.0"
   },
   "dependencies": {
     "@octokit/rest": "^22.0.1",
     "extract-zip": "^2.0.0",
     "fs-extra": "^11.3.3",
-    "got": "^11.8.6"
+    "got": "^14.6.6"
   }
 }
