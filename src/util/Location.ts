@@ -1,6 +1,9 @@
-import * as fs from 'fs-extra';
+import { createRequire } from 'node:module';
 import { platform } from 'os';
 import * as path from 'path';
+
+const require = createRequire(import.meta.url);
+const fs = require('fs-extra') as typeof import('fs-extra');
 
 /**
  * A simple representation of a folder in the file system, with some convenient methods for navigating through the hierarchy.

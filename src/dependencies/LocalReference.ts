@@ -1,4 +1,7 @@
-import * as fs from 'fs-extra';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
+const fs = require('fs-extra') as typeof import('fs-extra');
 
 import { ConfirmResult, DependencyInstaller, InstallResult, Success } from './index.js';
 import { Location, ProgressListener } from '../util/index.js';

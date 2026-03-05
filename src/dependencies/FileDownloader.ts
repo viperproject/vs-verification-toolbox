@@ -1,8 +1,11 @@
-import * as fs from 'fs-extra';
 import * as path from 'path';
+import { createRequire } from 'node:module';
 import got, { type Headers, type Progress } from 'got';
 import * as stream from 'stream';
 import { promisify } from 'util';
+
+const require = createRequire(import.meta.url);
+const fs = require('fs-extra') as typeof import('fs-extra');
 
 import { Canceled, ConfirmResult, DependencyInstaller, InstallResult, Success } from './index.js';
 import { Location, ProgressListener } from '../util/index.js';

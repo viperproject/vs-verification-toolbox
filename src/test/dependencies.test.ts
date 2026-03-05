@@ -1,5 +1,5 @@
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import * as assert from 'assert';
 import md5File from 'md5-file';
 import { fileURLToPath } from 'url';

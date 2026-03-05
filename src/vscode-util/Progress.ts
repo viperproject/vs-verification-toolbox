@@ -1,4 +1,6 @@
-import * as vscode from 'vscode';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const vscode = require('vscode') as typeof import('vscode');
 
 import { ProgressListener } from '../util/index.js';
 
