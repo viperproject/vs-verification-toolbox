@@ -1,14 +1,20 @@
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 import * as path from 'path';
-import * as yargs from 'yargs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import { runTests } from '@vscode/test-electron';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const PROJECT_ROOT = path.join(__dirname, "..", "..");
 const DATA_ROOT = path.join(PROJECT_ROOT, "src", "test", "data");
 
 async function main(): Promise<void> {
     try {
-        const argv = await yargs
+        const argv = await yargs(hideBin(process.argv))
             .option('token', {
                 description: 'GitHub access token that should be used for GitHub API calls. '
                     + 'Use the "GITHUB_TOKEN" environment variable for CI as node logs the command incl. arguments',
@@ -35,7 +41,7 @@ async function main(): Promise<void> {
 
         // The path to test runner
         // Passed to --extensionTestsPath
-        const extensionTestsPath = path.resolve(__dirname, './index');
+        const extensionTestsPath = path.resolve(__dirname, './index.js');
 
         const testOption = {
             version: vscode_version,

@@ -1,3 +1,3 @@
 // exports all modules in the current directory
 
-export * from './Progress';
+export * from './Progress.js';

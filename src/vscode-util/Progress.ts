@@ -1,6 +1,8 @@
-import * as vscode from 'vscode';
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const vscode = require('vscode') as typeof import('vscode');
 
-import { ProgressListener } from '../util';
+import { ProgressListener } from '../util/index.js';
 
 /**
  * Runs an asynchronous task, forwarding the progress it reports to the VS Code window as a notification with the given title.
