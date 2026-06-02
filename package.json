@@ -46,25 +46,25 @@
     "@types/mocha": "^10.0.6",
     "@types/vscode": "^1.100.0",
     "@types/yargs": "^17.0.35",
-    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/eslint-plugin": "^8.60.1",
     "@typescript-eslint/parser": "^8.31.1",
     "@vscode/test-electron": "^2.5.2",
-    "eslint": "^9.36.0",
+    "eslint": "^10.4.1",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsdoc": "^62.7.1",
+    "eslint-plugin-jsdoc": "^63.0.1",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-unicorn": "^63.0.0",
+    "eslint-plugin-unicorn": "^64.0.0",
     "glob": "^13.0.6",
     "md5-file": "^5.0.0",
-    "mocha": "^11.7.5",
-    "typescript": "^5.9.3",
+    "mocha": "^11.7.6",
+    "typescript": "^6.0.3",
     "yargs": "^18.0.0"
   },
   "dependencies": {
     "@octokit/rest": "^22.0.1",
     "extract-zip": "^2.0.0",
-    "fs-extra": "^11.3.3",
-    "got": "^14.6.6"
+    "fs-extra": "^11.3.5",
+    "got": "^15.0.5"
   }
 }
