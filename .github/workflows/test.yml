@@ -19,6 +19,11 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v7
 
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+
       - name: Cache npm
         uses: actions/cache@v6
         with:
